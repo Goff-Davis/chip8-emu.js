@@ -90,16 +90,23 @@ class Chip8 {
 		}
 	}
 
+	// set the input of the cpu
 	setInput(input) {
 		this.input = input;
 	}
 
+	// run one cpu cycle
 	step() {
 		if (this.awaitInput) {
 			return;
 		}
 
 		this.cycle();
+	}
+
+	// random int between 0 and 255 (inclusive)
+	getRand() {
+		return Math.floor(Math.random() * 256);
 	}
 
 	// completes one cpu cycle
@@ -386,11 +393,6 @@ class Chip8 {
 				}
 			}
 		}
-	}
-
-	// random int between 0 and 255 (inclusive)
-	getRand() {
-		return Math.floor(Math.random() * 256);
 	}
 }
 
