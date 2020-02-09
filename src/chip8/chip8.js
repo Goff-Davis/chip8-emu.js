@@ -24,7 +24,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-class chip8 {
+class Chip8 {
 	constructor() {
 		// initial cpu state
 		this.v = new Array(16);
@@ -384,4 +384,4 @@ class chip8 {
 	}
 }
 
-export default chip8;
+export default Chip8;
