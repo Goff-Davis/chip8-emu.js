@@ -16,6 +16,7 @@ class Video {
 		this.context.fillStyle = `#FFFFFF`;
 	}
 
+	// draw the video
 	draw(newStates) {
 		for (let i=0;i<this.resolution.width;i++) {
 			for (let j=0;j<this.resolution.height;j++) {
@@ -31,14 +32,17 @@ class Video {
 		this.states = newStates;
 	}
 
+	// get the current state
 	current() {
 		return this.states;
 	}
 
+	// clear the video
 	clear() {
 		this.draw(this.clearStates());
 	}
 
+	// clear the states
 	clearStates() {
 		const states = new Array(64);
 
