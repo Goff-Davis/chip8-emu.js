@@ -27,6 +27,8 @@ class Video {
 				}
 			}
 		}
+
+		this.states = newStates;
 	}
 
 	current() {
