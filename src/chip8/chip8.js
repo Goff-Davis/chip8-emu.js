@@ -332,8 +332,49 @@ class chip8 {
 						// 5* because each char is 5 bytes
 						this.i = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
 						break;
+					// FX33 store BCD of VX in I, I+1, and I+2
+					case 0x33:
+						const vx = opcode[0] % 0x10;
+						let value = this.registers[vx];
+
+						// ones
+						this.memory[this.i+2] = value % 10;
+						value /= 10;
+
+						// tens
+						this.memory[this.i+1] = value % 10;
+						value /= 10;
+
+						// hundreds
+						this.memory[this.i] = value % 10;
+						break;
+					// FX55 store V0 through VX in memory starting at I
+					case 0x55:
+						const vx = opcode[0] % 0x10;
+
+						for (let i=0;i<vx;i++) {
+							this.memory[this.i+i] = this.registers[i];
+						}
+						break;
+					// FX65 read V0 through VX from memory starting at I
+					case 0x65:
+						const vx = opcode[0] % 0x10;
+
+						for (let i=0;i<vx;i++) {
+							this.registers[i] = this.memory[this.i+i];
+						}
+						break;
 				}
 				break;
+		}
+
+		// decrement the timers
+		if (this.delayTimer > 0) {
+			this.delayTimer--;
+		}
+
+		if (this.soundTimer > 0) {
+			this.soundTimer--;
 		}
 	}
 
