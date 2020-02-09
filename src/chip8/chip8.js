@@ -25,7 +25,7 @@ const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
 class Chip8 {
-	constructor() {
+	constructor(video, audio) {
 		// initial cpu state
 		this.v = new Array(16);
 		this.i = 0;
@@ -36,9 +36,14 @@ class Chip8 {
 		this.soundTimer = 0;
 		this.memory = new Array(4096);
 		this.video = new Array(64 * 32);
-		this.keypad = new Array(16);
 
 		this.clear();
+
+		// emulator state
+		this.audio = audio;
+		this.video = video;
+		this.awaitInput = false;
+		this.input = 0;
 	}
 
 	// load rom into memory
@@ -68,9 +73,6 @@ class Chip8 {
 		// clear video
 		this.video.fill(0, 0);
 
-		// reset keys
-		this.keypad.fill(0, 0);
-
 		// reset pc
 		this.pc = START_ADDRESS;
 	}
@@ -86,6 +88,18 @@ class Chip8 {
 		for (let i=0;i<data.length;i++) {
 			this.memory[start + i] = data[i];
 		}
+	}
+
+	setInput(input) {
+		this.input = input;
+	}
+
+	step() {
+		if (this.awaitInput) {
+			return;
+		}
+
+		this.cycle();
 	}
 
 	// completes one cpu cycle
@@ -278,19 +292,11 @@ class Chip8 {
 					// @TODO needs to work with Canvas
 					case 0x9E:
 						const vx = opcode[0] % 0x10;
-
-						if (this.keypad[this.registers[vx]]) {
-							this.px += 2;
-						}
 						break;
 					// EXA1 skip next instruction if key with value VX is not pressed
 					// @TODO needs to work with Canvas
 					case 0xA1:
 						const vx = opcode[0] % 0x10;
-
-						if (!this.keypad[this.registers[vx]]) {
-							this.px += 2;
-						}
 						break;
 				}
 				break;
@@ -374,7 +380,11 @@ class Chip8 {
 		}
 
 		if (this.soundTimer > 0) {
-			this.soundTimer--;
+			if (--this.soundTimer === 0) {
+				if (this.audio) {
+					this.audio.play();
+				}
+			}
 		}
 	}
 
