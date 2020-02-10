@@ -24,7 +24,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = true;
+const debug = false;
 
 class Chip8 {
 	constructor(video, audio) {
@@ -181,10 +181,6 @@ class Chip8 {
 				switch(opcode[1]) {
 					// clears the video
 					case 0xE0:
-						if (debug) {
-							console.log(`CLEAR SCREEN`);
-						}
-
 						this.video.clear();
 						break;
 					// return from subroutine
@@ -308,10 +304,6 @@ class Chip8 {
 			// DXYN draw sprit at VX VY with height N
 			// VF = collision with already drawn pixel
 			case 0xD:
-				if (debug) {
-					console.log(`Drawing sprite from memory ${this.index}`);
-				}
-
 				const states = this.video.current();
 
 				for (let row=0;row<n;row++) {
@@ -326,16 +318,12 @@ class Chip8 {
 							y: this.registers[vy] + column
 						};
 
-						if (debug) {
-							console.log(`position:`);
-							console.log(position);
-						}
-
 						if (position.x > 63) {
 							position.x -= 64;
 						}
 
 						if (position.y > 31) {
+
 							position.y -= 32;
 						}
 
@@ -343,9 +331,6 @@ class Chip8 {
 							let result = true;
 
 							if (states[position.x][position.y] === pixelStates[column]) {
-								if (debug) {
-									console.log(`COLLISION!`);
-								}
 								result = false;
 								this.registers[0xF] = 1;
 							}

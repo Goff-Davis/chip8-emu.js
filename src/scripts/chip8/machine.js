@@ -1,7 +1,7 @@
 import Chip8 from './chip8.js';
 import Video from './video.js';
 
-const debug = true;
+const debug = false;
 
 class Machine {
 	constructor(videoSource, audioSource) {

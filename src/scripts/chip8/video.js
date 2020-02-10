@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 
 class Video {
 	constructor(container) {
