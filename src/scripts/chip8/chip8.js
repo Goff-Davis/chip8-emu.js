@@ -1,4 +1,4 @@
-const START_ADDRESS = 0x200;
+const START_ADDRESS = 0x200; // 512
 
 const FONTSET_START_ADDRESS = 0x50;
 const FONTSET_SIZE = 80;
@@ -49,11 +49,21 @@ class Chip8 {
 
 	// load rom into memory
 	load(rom) {
+		if (debug) {
+			console.log(`Loading rom...`);
+		}
+
 		this.clear();
 		this.copy(START_ADDRESS, rom);
+
+		console.log(`Loaded.`);
 	}
 
 	clear() {
+		if (debug) {
+			console.log(`Cleared memory.`);
+		}
+
 		// clear registers
 		this.registers.fill(0, 0);
 
@@ -77,12 +87,16 @@ class Chip8 {
 	// param start = (unsigned) int
 	// param data = string
 	copy(start, data) {
-		if (typeof start !== `number`) {
-			console.error(`Failed to copy data. Incorrect parameter type.\nExpected start to be number, recieved ${typeof start}.\nExpected data to be string, recieved ${typeof data}.`)
+		if (debug) {
+			console.log(`Copying data...`);
 		}
 
 		for (let i=0;i<data.length;i++) {
 			this.memory[start + i] = data[i];
+		}
+
+		if (debug) {
+			console.log(`Copied.`);
 		}
 	}
 
@@ -118,34 +132,64 @@ class Chip8 {
 		];
 	}
 
-	debugInfo() {
-		const opcode = [this.memory[this.pc], this.memory[this.pc+1]];
-
-		console.log(`last opcode: ${opcode}`);
-		console.log(`index: ${this.index}`)
-		console.log(`pc: ${this.pc}`);
-		console.log(`sp: ${this.sp}`);
-		console.log(`delayTimer: ${this.delayTimer}`);
-		console.log(`soundTimer: ${this.soundTimer}`);
+	dump() {
+		console.log(this);
 	}
 
 	// completes one cpu cycle
 	cycle() {
 		// array for ease of accessing opcode "parameters"
 		const opcode = [this.memory[this.pc], this.memory[this.pc+1]];
-		const vx = opcode[0] % 0x10;
-		const vy = opcode[1] / 0x10;
+
+		if (debug) {
+			// set back 2 to see originating spot
+			console.log(`pc: ${this.pc}\nopcode: ${opcode[0].toString(16)} ${opcode[1].toString(16)}`);
+		}
+
+		if (this.pc >= 0xFFE) {
+			if (this.debug) {
+				console.log(`Finished running.`);
+			}
+
+			this.pc = 0;
+		}
+		else {
+			this.pc += 2;
+		}
+
+		this.execute(opcode);
+
+		// decrement the timers
+		if (this.delayTimer > 0) {
+			this.delayTimer--;
+		}
+
+		if (this.soundTimer > 0) {
+			if (--this.soundTimer === 0) {
+				if (this.audio) {
+					this.audio.play();
+				}
+			}
+		}
+	}
+
+	execute(opcode) {
+		const vx = Math.floor(opcode[0] % 0x10);
+		const vy = Math.floor(opcode[1] / 0x10);
 		const kk = opcode[1];
-		const nnn = parseInt(opcode.join(``).slice(1));
+		const nnn = ((opcode[0] % 0x10) * 0x100) + opcode[1];
+		const n = opcode[1] & 0x0F;
 
-		this.pc += 2;
-
-		switch(opcode[0] / 0x10) {
+		switch(Math.floor(opcode[0] / 0x10)) {
 			case 0x0:
 				switch(opcode[1]) {
 					// clears the video
 					case 0xE0:
-						this.video.fill(0, 0);
+						if (debug) {
+							console.log(`Clear screen opcode called.`);
+						}
+
+						this.display.clear();
 						break;
 					// return from subroutine
 					case 0xEE:
@@ -190,8 +234,6 @@ class Chip8 {
 				this.registers[vx] += kk;
 				break;
 			case 0x8:
-				const n = opcode[1] & 0x0F;
-
 				switch(n) {
 					// 8XY0 set VX = VY
 					case 0x0:
@@ -243,7 +285,7 @@ class Chip8 {
 						break;
 					// 8XYE set VX = VX << 1
 					case 0xE:
-						this.registers[0xF] = this.registers[vx] / 0x10;
+						this.registers[0xF] = Math.floor(this.registers[vx] / 0x10);
 						this.registers[vx] *= 2;
 						break;
 				}
@@ -270,6 +312,10 @@ class Chip8 {
 			// DXYN draw sprit at VX VY with height N
 			// VF = collision with already drawn pixel
 			case 0xD:
+				if (debug) {
+					console.log(`Draw opcode called.`);
+				}
+
 				const states = this.display.current();
 
 				for (let row=0;row<n;row++) {
@@ -382,19 +428,8 @@ class Chip8 {
 						break;
 				}
 				break;
-		}
-
-		// decrement the timers
-		if (this.delayTimer > 0) {
-			this.delayTimer--;
-		}
-
-		if (this.soundTimer > 0) {
-			if (--this.soundTimer === 0) {
-				if (this.audio) {
-					this.audio.play();
-				}
-			}
+			default:
+				console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 		}
 	}
 }

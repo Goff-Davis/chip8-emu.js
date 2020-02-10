@@ -1,3 +1,5 @@
+const debug = false;
+
 class Video {
 	constructor(container) {
 		this.states = this.clearStates();
@@ -7,7 +9,7 @@ class Video {
 			height: 32
 		};
 
-		this.pixels = {
+		this.pixel = {
 			width: container.width / 64,
 			height: container.height / 32
 		};
@@ -18,13 +20,18 @@ class Video {
 
 	// draw the video
 	draw(newStates) {
+		if (debug) {
+			console.log(`Drawing`);
+			console.log(newStates);
+		}
+
 		for (let i=0;i<this.resolution.width;i++) {
 			for (let j=0;j<this.resolution.height;j++) {
 				if (newStates[i][j]) {
-					this.context.fillRect(i * this.pixels.width, j * this.pixels.height, this.pixels.width, this.pixels.height);
+					this.context.fillRect(i * this.pixel.width, j * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 				else {
-					this.context.clearRect(i * this.pixels.width, i * this.pixels.height, this.pixels.width, this.pixels.height);
+					this.context.clearRect(i * this.pixel.width, i * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 			}
 		}
