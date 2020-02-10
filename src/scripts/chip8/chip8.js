@@ -24,6 +24,8 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
+const debug = true;
+
 class Chip8 {
 	constructor(video, audio) {
 		// initial cpu state
@@ -101,6 +103,30 @@ class Chip8 {
 	// random int between 0 and 255 (inclusive)
 	getRand() {
 		return Math.floor(Math.random() * 256);
+	}
+
+	byteToSwitch(byte) {
+		return [
+			(byte & 0x80) == 0x80,
+			(byte & 0x40) == 0x40,
+			(byte & 0x20) == 0x20,
+			(byte & 0x10) == 0x10,
+			(byte & 0x08) == 0x08,
+			(byte & 0x04) == 0x04,
+			(byte & 0x02) == 0x02,
+			(byte & 0x01) == 0x01
+		];
+	}
+
+	debugInfo() {
+		const opcode = [this.memory[this.pc], this.memory[this.pc+1]];
+
+		console.log(`last opcode: ${opcode}`);
+		console.log(`index: ${this.index}`)
+		console.log(`pc: ${this.pc}`);
+		console.log(`sp: ${this.sp}`);
+		console.log(`delayTimer: ${this.delayTimer}`);
+		console.log(`soundTimer: ${this.soundTimer}`);
 	}
 
 	// completes one cpu cycle
@@ -243,19 +269,57 @@ class Chip8 {
 				break;
 			// DXYN draw sprit at VX VY with height N
 			// VF = collision with already drawn pixel
-			// @TODO this will be wonky with all the bitwise stuff
-			// @TODO needs to work with Canvas
 			case 0xD:
+				const states = this.display.current();
+
+				for (let row=0;row<n;row++) {
+					const sprite = this.memory[this.index+row];
+					const pixelStates = this.byteToSwitch(sprite);
+
+					this.registers[0xF] = 0;
+
+					for (let column=0;column<8;column++) {
+						const position = {
+							x: this.registers[vx] + row,
+							y: this.registers[vy] + column
+						};
+
+						if (position.x > 63) {
+							position.x -= 64;
+						}
+
+						if (position.y > 31) {
+							position.y -= 32;
+						}
+
+						if (pixelStates[column]) {
+							let result = true;
+
+							if (states[position.x][position.y] === pixelStates[column]) {
+								result = false;
+								this.registers[0xF] = 1;
+							}
+
+							states[position.x][position.y] = result;
+						}
+					}
+				}
+
+				this.display.draw(states);
 				break;
 			case 0xE:
 				switch(opcode[1]) {
 					// EX9E skip next instruction if key with value VX is pressed
-					// @TODO needs to work with Canvas
 					case 0x9E:
+						if (this.registers[vx] === this.input) {
+							this.pc += 2;
+						}
 						break;
 					// EXA1 skip next instruction if key with value VX is not pressed
-					// @TODO needs to work with Canvas
 					case 0xA1:
+						if (this.registers[vx] !== this.input) {
+							this.pc += 2;
+						}
 						break;
 				}
 				break;
@@ -266,8 +330,10 @@ class Chip8 {
 						this.registers[vx] = this.delayTimer;
 						break;
 					// FX0A wait for key press then store key value in VX
-					// @TODO needs to work with Canvas
 					case 0x0A:
+						if (this.awaitInput) {
+							this.registers[vx] = this.input;
+						}
 						break;
 					// FX15 set delay timer = VX
 					case 0x15:
