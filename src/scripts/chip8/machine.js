@@ -1,5 +1,5 @@
-import Chip8 from `./chip8`;
-import Video from `./video`;
+import Chip8 from './chip8.js';
+import Video from './video.js';
 
 class Machine {
 	constructor(videoSource, audioSource) {
@@ -43,7 +43,6 @@ class Machine {
 	}
 
 	// load a rom
-	// Param rom = string
 	boot(rom) {
 		this.stop();
 		this.cpu.loadRom(rom);
