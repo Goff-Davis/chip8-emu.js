@@ -316,17 +316,16 @@ class Chip8 {
 
 					for (let column=0;column<8;column++) {
 						const position = {
-							x: this.registers[vx] + row,
-							y: this.registers[vy] + column
+							x: (this.registers[vx] + row) % VIDEO_WIDTH,
+							y: (this.registers[vy] + column) % VIDEO_HEIGHT
 						};
 
-						if (position.x > 63) {
-							position.x -= 64;
+						if (position.x > 63 || position.x < 0) {
+							console.error(`Exceeded width without wrapping`);
 						}
 
-						if (position.y > 31) {
-
-							position.y -= 32;
+						if (position.y > 31 || position.y < 0) {
+							console.error(`Exceeded height without wrapping`);
 						}
 
 						if (pixelStates[column]) {
