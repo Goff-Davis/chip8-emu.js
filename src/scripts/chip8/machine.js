@@ -1,7 +1,7 @@
 import Chip8 from `./chip8`;
 import Video from `./video`;
 
-class Computer {
+class Machine {
 	constructor(videoSource, audioSource) {
 		const video = new Video(videoSource);
 		const audio = audioSource ? new Audio(audioSource):null;
@@ -51,4 +51,4 @@ class Computer {
 	}
 }
 
-export default Computer;
+export default Machine;
