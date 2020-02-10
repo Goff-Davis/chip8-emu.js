@@ -11,7 +11,7 @@ const readROM = (file, callback) => {
 
 	reader.onload = event => {
 		const buffer = event.target.result;
-		const data = newUint8Array(buffer);
+		const data = new Uint8Array(buffer);
 
 		callback(data);
 	};
@@ -26,9 +26,11 @@ const romName = `test1.ch8`;
 
 fetch(`../../roms/${romName}`)
 	.then(r => r.blob())
-		.then(blob => {
-			readROM(blob, rom => { vm.boot(rom); });
+	.then(blob => {
+		readROM(blob, rom => {
+			vm.boot(rom);
 		});
+	});
 
 // might be unneeded
 window.chip8vm = vm;
