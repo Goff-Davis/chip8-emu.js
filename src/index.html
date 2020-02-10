@@ -8,17 +8,23 @@
 		<title>Chip8 Emulator</title>
 		<meta name="description" content="Chip8 emulator written in JavaScript.">
 
+		<link href="./src/css/main.css" rel="stylesheet" type="text/css">
+
 		<script type="module" src="./src/scripts/main.js"></script>
 	</head>
 
-	<body>
+	<body class="flex-column">
 		<noscript>JavaScript is required to use this page. Please enable it and reload.</noscript>
 
-		<h1>Chip8 Emulator</h1>
+		<header>
+			<h1>Chip8 Emulator</h1>
+		</header>
 
-		<canvas id="display" width="320" height="320"></canvas>
+		<main class="flex-column">
+			<canvas id="display" width="320" height="160"></canvas>
 
-		<button id="start">Start</button>
-		<button id="stop">Stop</button>
+			<button id="start">Start</button>
+			<button id="stop">Stop</button>
+		</main>
 	</body>
 </html>
