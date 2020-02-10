@@ -1,0 +1,25 @@
+{
+	"name": "chip8-emu",
+	"version": "1.0.0",
+	"description": "Chip8 Emulator in JavaScript",
+	"main": "index.js",
+	"scripts": {
+		"lint": "eslint src/**/*.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Goff-Davis/chip8-emu.js.git"
+	},
+	"author": "Davis Goff",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/Goff-Davis/chip8-emu.js/issues"
+	},
+	"homepage": "https://github.com/Goff-Davis/chip8-emu.js#readme",
+	"devDependencies": {
+		"eslint": "^6.8.0"
+	},
+	"dependencies": {
+		"express": "^4.17.1"
+	}
+}
