@@ -47,7 +47,6 @@ class Chip8 {
 	}
 
 	// load rom into memory
-	// param rom = string
 	load(rom) {
 		if (typeof rom !== `string`) {
 			console.error(`Failed to load rom. Incorrect data type.\nExpected string, recieved ${typeof rom}`);
@@ -113,6 +112,11 @@ class Chip8 {
 	cycle() {
 		// array for ease of accessing opcode "parameters"
 		const opcode = [this.memory[this.pc], this.memory[this.pc+1]];
+		const vx = opcode[0] % 0x10;
+		const vy = opcode[1] / 0x10;
+		const kk = opcode[1];
+		const nnn = parseInt(opcode.join(``).slice(1));
+
 		this.pc += 2;
 
 		switch(opcode[0] / 0x10) {
@@ -130,53 +134,38 @@ class Chip8 {
 				break;
 			// 1NNN jump to NNN
 			case 0x1:
-				this.pc = parseInt(opcode.join(``).slice(1));
+				this.pc = nnn;
 				break;
 			// 2NNN CALL NNN
 			case 0x2:
 				this.stack[this.sp++] = this.pc;
-				this.pc = parseInt(opcode.join(``).slice(1));
+				this.pc = nnn;
 				break;
 			// 3XKK skip next instruction if VX == KK
 			case 0x3:
-				const vx = opcode[0] % 0x10;
-				const kk = opcode[1];
-
 				if (this.registers[vx] === kk) {
 					this.pc += 2;
 				}
 				break;
 			// 4XKK skip next instruction if VX != KK
 			case 0x4:
-				const vx = opcode[0] % 0x10;
-				const kk = opcode[1];
-
 				if (this.registers[vx] !== kk) {
 					this.pc += 2;
 				}
 				break;
 			// 5XY0 skip next instruction if VX == VY
 			case 0x5:
-				const vx = opcode[0] % 0x10;
-				const vy = opcode[1] / 0x10;
-
 				if (this.registers[vx] === this.registers[vy]) {
 					this.pc += 2;
 				}
 				break;
 			// 6XKK set VX = KK
 			case 0x6:
-				const vx = opcode[0] % 0x10;
-				const kk = opcode[1];
-
 				// need ternary for overflow (no carry)
 				this.registers[vx] = kk > 0xFF ? kk-0x100:kk;
 				break;
 			// 7XKK set VX = VX + KK
 			case 0x7:
-				const vx = opcode[0] % 0x10;
-				const kk = opcode[1];
-
 				this.registers[vx] += kk;
 				break;
 			case 0x8:
@@ -185,36 +174,22 @@ class Chip8 {
 				switch(n) {
 					// 8XY0 set VX = VY
 					case 0x0:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[vx] = this.registers[vy];
 						break;
 					// 8XY1 set VX = VX OR VY
 					case 0x1:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[vx] |= this.registers[vy];
 						break;
 					// 8XY2 set VX = VX AND VY
 					case 0x2:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[vx] &= this.registers[vy];
 						break;
 					// 8XY3 set VX = VX XOR VY
 					case 0x3:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[vx] ^= this.registers[vy];
 						break;
 					// 8XY4 set VX = VX + VY set VF = carry
 					case 0x4:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
 						const sum = this.registers[vx] + this.registers[vy];
 
 						if (sum > 0xFF) {
@@ -228,9 +203,6 @@ class Chip8 {
 						break;
 					// 8XY5 set VX = VX - VY set VF = NOT borrow
 					case 0x5:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[0xF] = this.registers[vx] > this.registers[vy] ? 1:0;
 
 						// @TODO if this creates overflow issues
@@ -238,16 +210,11 @@ class Chip8 {
 						break;
 					// 8XY6 set VX = VX >> 1
 					case 0x6:
-						const vx = opcode[0] % 0x10;
-
 						this.registers[0xF] = this.registers[vx] % 0x10;
 						this.registers[vx] /= 2;
 						break;
 					// 8XY7 set VX = VY - VX set VF = NOT borrow
 					case 0x7:
-						const vx = opcode[0] % 0x10;
-						const vy = opcode[1] / 0x10;
-
 						this.registers[0xF] = this.registers[vy] > this.registers[vx] ? 1:0;
 
 						// @TODO if this creates overflow issues
@@ -255,8 +222,6 @@ class Chip8 {
 						break;
 					// 8XYE set VX = VX << 1
 					case 0xE:
-						const vx = opcode[0] % 0x10;
-
 						this.registers[0xF] = this.registers[vx] / 0x10;
 						this.registers[vx] *= 2;
 						break;
@@ -264,26 +229,20 @@ class Chip8 {
 				break;
 			// 9XY0 skip next instruction if VX != VY
 			case 0x9:
-				const vx = opcode[0] % 0x10;
-				const vy = opcode[1] / 0x10;
-
 				if (this.registers[vx] !== this.registers[vy]) {
 					this.pc += 2;
 				}
 				break;
 			// ANNN set I = NNN
 			case 0xA:
-				this.i = parseInt(opcode.join(``).slice(1));
+				this.i = nnn;
 				break;
 			// 0xBNNN jump to NNN + V0
 			case 0xB:
-				this.pc = this.registers[0] + parseInt(opcode.join(``).slice(1));
+				this.pc = this.registers[0] + nnn;
 				break;
 			// CXKK set VX = random AND KK
 			case 0xC:
-				const vx = opcode[0] % 0x10;
-				const kk = opcode[1];
-
 				// @TODO check that this has same result as unsigned (prob not)
 				this.registers[vx] = getRand() & kk;
 				break;
@@ -298,12 +257,10 @@ class Chip8 {
 					// EX9E skip next instruction if key with value VX is pressed
 					// @TODO needs to work with Canvas
 					case 0x9E:
-						const vx = opcode[0] % 0x10;
 						break;
 					// EXA1 skip next instruction if key with value VX is not pressed
 					// @TODO needs to work with Canvas
 					case 0xA1:
-						const vx = opcode[0] % 0x10;
 						break;
 				}
 				break;
@@ -311,8 +268,6 @@ class Chip8 {
 				switch(opcode[1]) {
 					// FX07 set VX = delay timer value
 					case 0x07:
-						const vx = opcode[0] % 0x10;
-
 						this.registers[vx] = this.delayTimer;
 						break;
 					// FX0A wait for key press then store key value in VX
@@ -321,33 +276,24 @@ class Chip8 {
 						break;
 					// FX15 set delay timer = VX
 					case 0x15:
-						const vx = opcode[0] % 0x10;
-
 						this.delayTimer = this.registers[vx];
 						break;
 					// FX18 set sound timer = VX
 					case 0x18:
-						const vx = opcode[0] % 0x10;
-
 						this.soundTimer = this.registers[vx];
 						break;
 					// FX1E set I = I + VX
 					case 0x1E:
-						const vx = opcode[0] % 0x10;
-
 						// @TODO check overflow issues
 						this.i += this.registers[vx];
 						break;
 					// FX29 set I = location of sprite for VX
 					case 0x29:
-						const vx = opcode[0] % 0x10;
-
 						// 5* because each char is 5 bytes
 						this.i = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
 						break;
 					// FX33 store BCD of VX in I, I+1, and I+2
 					case 0x33:
-						const vx = opcode[0] % 0x10;
 						let value = this.registers[vx];
 
 						// ones
@@ -363,16 +309,12 @@ class Chip8 {
 						break;
 					// FX55 store V0 through VX in memory starting at I
 					case 0x55:
-						const vx = opcode[0] % 0x10;
-
 						for (let i=0;i<vx;i++) {
 							this.memory[this.i+i] = this.registers[i];
 						}
 						break;
 					// FX65 read V0 through VX from memory starting at I
 					case 0x65:
-						const vx = opcode[0] % 0x10;
-
 						for (let i=0;i<vx;i++) {
 							this.registers[i] = this.memory[this.i+i];
 						}
