@@ -18,7 +18,7 @@ class Machine {
 		}
 
 		this.stepID = window.setInterval(() => {
-			this.cpu.step();
+			this.chip.step();
 		}, 1000 / this.clockRate);
 	}
 
@@ -39,13 +39,13 @@ class Machine {
 
 	// set the cpu input
 	setInput(input) {
-		this.cpu.setInput(input);
+		this.chip.setInput(input);
 	}
 
 	// load a rom
 	boot(rom) {
 		this.stop();
-		this.cpu.loadRom(rom);
+		this.chip.load(rom);
 		this.start();
 	}
 }

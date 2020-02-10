@@ -27,38 +27,33 @@ const VIDEO_WIDTH = 64;
 class Chip8 {
 	constructor(video, audio) {
 		// initial cpu state
-		this.v = new Array(16);
-		this.i = 0;
+		this.registers = new Array(16);
+		this.index = 0;
 		this.pc = START_ADDRESS;
 		this.stack = new Array(16);
 		this.sp = 0;
 		this.delayTimer = 0;
 		this.soundTimer = 0;
 		this.memory = new Array(4096);
-		this.video = new Array(64 * 32);
-
-		this.clear();
 
 		// emulator state
 		this.audio = audio;
 		this.video = video;
 		this.awaitInput = false;
 		this.input = 0;
+
+		this.clear();
 	}
 
 	// load rom into memory
 	load(rom) {
-		if (typeof rom !== `string`) {
-			console.error(`Failed to load rom. Incorrect data type.\nExpected string, recieved ${typeof rom}`);
-		}
-
-		this.reset();
+		this.clear();
 		this.copy(START_ADDRESS, rom);
 	}
 
 	clear() {
 		// clear registers
-		this.v.fill(0, 0);
+		this.registers.fill(0, 0);
 
 		// clear stack
 		this.stack.fill(0, 0);
@@ -70,7 +65,7 @@ class Chip8 {
 		this.copy(FONTSET_START_ADDRESS, fontset);
 
 		// clear video
-		this.video.fill(0, 0);
+		this.video.clear();
 
 		// reset pc
 		this.pc = START_ADDRESS;
@@ -235,7 +230,7 @@ class Chip8 {
 				break;
 			// ANNN set I = NNN
 			case 0xA:
-				this.i = nnn;
+				this.index = nnn;
 				break;
 			// 0xBNNN jump to NNN + V0
 			case 0xB:
@@ -285,38 +280,38 @@ class Chip8 {
 					// FX1E set I = I + VX
 					case 0x1E:
 						// @TODO check overflow issues
-						this.i += this.registers[vx];
+						this.index += this.registers[vx];
 						break;
 					// FX29 set I = location of sprite for VX
 					case 0x29:
 						// 5* because each char is 5 bytes
-						this.i = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
+						this.index = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
 						break;
 					// FX33 store BCD of VX in I, I+1, and I+2
 					case 0x33:
 						let value = this.registers[vx];
 
 						// ones
-						this.memory[this.i+2] = value % 10;
+						this.memory[this.index+2] = value % 10;
 						value /= 10;
 
 						// tens
-						this.memory[this.i+1] = value % 10;
+						this.memory[this.index+1] = value % 10;
 						value /= 10;
 
 						// hundreds
-						this.memory[this.i] = value % 10;
+						this.memory[this.index] = value % 10;
 						break;
 					// FX55 store V0 through VX in memory starting at I
 					case 0x55:
 						for (let i=0;i<vx;i++) {
-							this.memory[this.i+i] = this.registers[i];
+							this.memory[this.index+i] = this.registers[i];
 						}
 						break;
 					// FX65 read V0 through VX from memory starting at I
 					case 0x65:
 						for (let i=0;i<vx;i++) {
-							this.registers[i] = this.memory[this.i+i];
+							this.registers[i] = this.memory[this.index+i];
 						}
 						break;
 				}
