@@ -1,6 +1,6 @@
 import Machine from './chip8/machine.js';
 
-const debug = true;
+const debug = false;
 
 const display = document.getElementById(`display`);
 const startBtn = document.getElementById(`start`);
@@ -90,8 +90,6 @@ const romName = `test1.ch8`;
 
 fetch(`../../roms/${romName}`)
 	.then(r => {
-		console.log(r);
-		console.log(typeof r);
 		return r.blob();
 	})
 	.then(blob => {
