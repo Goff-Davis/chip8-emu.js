@@ -49,7 +49,9 @@ class Machine {
 
 		this.stepID = null;
 
-		console.log(`Stopped.`);
+		if (debug) {
+			console.log(`Stopped.`);
+		}
 	}
 
 	// stop running and reset the cpu

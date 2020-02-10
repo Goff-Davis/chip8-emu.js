@@ -56,7 +56,9 @@ class Chip8 {
 		this.clear();
 		this.copy(START_ADDRESS, rom);
 
-		console.log(`Loaded.`);
+		if (debug) {
+			console.log(`Loaded.`);
+		}
 	}
 
 	clear() {
