@@ -147,11 +147,7 @@ class Chip8 {
 		}
 
 		if (this.pc >= 0xFFE) {
-			if (this.debug) {
-				console.log(`Finished running.`);
-			}
-
-			this.pc = 0;
+			this.pc = START_ADDRESS;
 		}
 		else {
 			this.pc += 2;
@@ -185,11 +181,7 @@ class Chip8 {
 				switch(opcode[1]) {
 					// clears the video
 					case 0xE0:
-						if (debug) {
-							console.log(`Clear screen opcode called.`);
-						}
-
-						this.display.clear();
+						this.video.clear();
 						break;
 					// return from subroutine
 					case 0xEE:
@@ -312,11 +304,7 @@ class Chip8 {
 			// DXYN draw sprit at VX VY with height N
 			// VF = collision with already drawn pixel
 			case 0xD:
-				if (debug) {
-					console.log(`Draw opcode called.`);
-				}
-
-				const states = this.display.current();
+				const states = this.video.current();
 
 				for (let row=0;row<n;row++) {
 					const sprite = this.memory[this.index+row];
@@ -351,7 +339,7 @@ class Chip8 {
 					}
 				}
 
-				this.display.draw(states);
+				this.video.draw(states);
 				break;
 			case 0xE:
 				switch(opcode[1]) {

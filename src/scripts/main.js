@@ -89,7 +89,11 @@ stopBtn.onclick = () => vm.stop();
 const romName = `test1.ch8`;
 
 fetch(`../../roms/${romName}`)
-	.then(r => r.blob())
+	.then(r => {
+		console.log(r);
+		console.log(typeof r);
+		return r.blob();
+	})
 	.then(blob => {
 		readROM(blob, rom => {
 			vm.boot(rom);
