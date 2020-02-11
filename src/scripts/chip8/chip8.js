@@ -24,7 +24,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = false;
+const debug = true;
 
 class Chip8 {
 	constructor(video, audio) {
@@ -332,6 +332,10 @@ class Chip8 {
 							let result = true;
 
 							if (states[position.x][position.y] === pixelStates[column]) {
+								if (debug) {
+									console.log(`====\nXORed\n====`)
+								}
+
 								result = false;
 								this.registers[0xF] = 1;
 							}
