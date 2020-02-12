@@ -82,6 +82,10 @@ class Machine {
 		this.start();
 	}
 
+	setDisplaySize(width, height) {
+		this.video.changePixelSize(width, height);
+	}
+
 	// load a rom
 	boot(rom) {
 		if (debug) {

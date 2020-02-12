@@ -55,7 +55,7 @@ select {
 	}
 }
 
-/* Main styling */
+/* General styling */
 
 * {
 	--white: #f2f2f2;
@@ -69,6 +69,11 @@ select {
 	display: none;
 }
 
+body, main, footer {
+	display: flex;
+	flex-direction: column;
+}
+
 body {
 	background-color: var(--white);
 	color: var(--black);
@@ -76,15 +81,17 @@ body {
 	height: 100%;
 }
 
-.flex-column {
-	display: flex;
-	flex-direction: column;
+body, main {
 	align-items: center;
 	justify-content: center;
 }
 
 header {
-	font-size: 20px;
+	text-align: center;
+}
+
+h1 {
+	font-size: 40px;
 }
 
 main {
@@ -95,30 +102,47 @@ main {
 footer {
 	flex-shrink: 0;
 	font-size: 16px;
-}
-
-#display {
-	background-color: var(--black);
-
-	margin: 30px;
+	width: 100%;
 }
 
 h1, h2 {
 	color: var(--accent);
+	font-weight: bold;
+}
+
+/* Body styling */
+
+#display {
+	background-color: var(--black);
+}
+
+.main-content {
+	margin: 0.3em;
+}
+
+#power {
+	margin-bottom: 2em;
+}
+
+input, button {
+	border-radius: 2px;
+	border: 1px solid var(--buttons);
+}
+
+input:hover, input:focus, button:hover, button:focus {
+	border: 1px solid var(--focus);
 }
 
 button {
 	background-color: var(--buttons);
 	color: var(--white);
-	border: none;
-	border-radius: 2px;
 
 	padding: 0.2em 1em;
 }
 
 button:hover, button:focus {
-	background-color: var(--focus);
 	cursor: pointer;
+	background-color: var(--focus);
 }
 
 /* Custom file upload styling */
@@ -150,4 +174,37 @@ button:hover, button:focus {
 
 [type="file"]:focus + label {
 	outline: 1px dotted var(--black);
+}
+
+/* Number input styling */
+[type="number"] {
+	padding: 0.2em;
+	width: 6em;
+}
+
+/* Footer styling */
+footer {
+	text-align: left;
+	justify-content: flex-start;
+	align-content: flex-end;
+	padding: 0 1em;
+}
+
+h2 {
+	font-size: 20px;
+}
+
+footer p {
+	margin-bottom: 0.5em;
+}
+
+a img {
+	display: inline;
+	height: 14px;
+	width: auto;
+	margin-right: 0.3em;
+}
+
+#copyright {
+	text-align: center;
 }

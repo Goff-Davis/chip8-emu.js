@@ -7,6 +7,7 @@ document.getElementById('year').innerHTML = new Date().getFullYear();
 const display = document.getElementById(`display`);
 const power = document.getElementById(`power`);
 const romSelect = document.getElementById(`roms`);
+const screenSize = document.getElementById(`screen-size`);
 const clockRate = document.getElementById(`clock-rate`);
 const upload = document.getElementById(`upload`);
 const ctrlToggle = document.getElementById(`ctrl-toggle`);
@@ -100,6 +101,16 @@ const loadROM = name => {
 		});
 };
 
+const changeSize = size => {
+	const width = 64 * size;
+	const height = 32 * size;
+
+	display.style.width = width;
+	display.style.height = height;
+
+	vm.setDisplaySize(width, height);
+};
+
 power.onclick = event => {
 	if (power.innerHTML === `Start`) {
 		power.innerHTML = `Stop`;
@@ -114,6 +125,10 @@ power.onclick = event => {
 romSelect.onchange = event => {
 	loadROM(event.target.value);
 };
+
+screenSize.onchange = event => {
+	changeSize(parseInt(event.target.value));
+}
 
 clockRate.onchange = event => {
 	vm.setClockRate(parseInt(event.target.value));
@@ -131,6 +146,8 @@ ctrlToggle.onclick = event => {
 		controls.setAttribute(`aria-hidden`, `true`);
 	}
 };
+
+changeSize(parseInt(screenSize.value));
 
 if (upload.value !== ``) {
 	readROM(upload.files[0])

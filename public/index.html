@@ -21,31 +21,37 @@
 		</header>
 
 		<main class="flex-column">
-			<canvas id="display" width="512" height="256"></canvas>
+			<canvas id="display" class="main-content"></canvas>
 
-			<button id="power" aria-live="polite">Stop</button>
+			<button id="power" aria-live="polite" class="main-content">Stop</button>
 
-			<label for="roms">Choose a rom to play:</label>
-			<select id="roms">
-				<option value="test1.ch8">test1.ch8</option>
-				<option value="test2.ch8">test2.ch8</option>
-				<option value="CONNECT4">CONNECT4</option>
-				<option value="INVADERS">INVADERS</option>
-				<option value="MAZE">MAZE</option>
-				<option value="MISSILE">MISSILE</option>
-				<option value="PONG">PONG</option>
-				<option value="PONG2">PONG2</option>
-				<option value="TETRIS">TETRIS</option>
-				<option value="TICTAC">TICTAC</option>
-			</select>
+			<label class="main-content">Choose a rom to play:
+				<select id="roms">
+					<option value="test1.ch8">test1.ch8</option>
+					<option value="test2.ch8">test2.ch8</option>
+					<option value="CONNECT4">CONNECT4</option>
+					<option value="INVADERS">INVADERS</option>
+					<option value="MAZE">MAZE</option>
+					<option value="MISSILE">MISSILE</option>
+					<option value="PONG">PONG</option>
+					<option value="PONG2">PONG2</option>
+					<option value="TETRIS">TETRIS</option>
+					<option value="TICTAC">TICTAC</option>
+				</select>
+			</label>
 
-			<label for="clock-rate">Set clock rate in Hertz (recommend 150-500)</label>
-			<input id="clock-rate" type="number" min="1" value="300">
+			<label class="main-content">Set Screen Size (multiplier):
+				<input id="screen-size" type="number" min="1" value="8">
+			</label>
+
+			<label class="main-content">Set clock rate in Hertz (recommend 150-500):
+				<input id="clock-rate" type="number" min="1" value="300">
+			</label>
 
 			<input id="upload" type="file">
-			<label for="upload">Upload your own</label>
+			<label for="upload" class="main-content">Upload your own</label>
 
-			<button id="ctrl-toggle">Controls</button>
+			<button id="ctrl-toggle" class="main-content">Controls</button>
 
 			<div id="controls" aria-hidden="true" aria-live="polite">
 				<p>Controls vary for each game, but here are all the usable keys.</p>
@@ -72,14 +78,14 @@
 
 		<footer>
 			<h2>Sounds</h2>
-			<p>If you are not hearing any sounds, check if you have autoplay disabled.</p>
+			<p>If you are not hearing any sounds, check if autoplay is disabled.</p>
 
 			<h2>About</h2>
 			<p>Developed for fun and profit in JavaScript. Use as you wish.</p>
 
-			<a href="https://github.com/Goff-Davis/chip8-emu.js" target="_blank" rel="noopener">Github</a>
+			<a href="https://github.com/Goff-Davis/chip8-emu.js" target="_blank" rel="noopener"><img src="./img/github.png" alt="Github logo">Github</a>
 
-			<a href="https://github.com/chrisledet/chip8.js">With code/inspiration from Chris Ledet's emulator.</a>
+			<a href="https://github.com/chrisledet/chip8.js"><img src="./img/github.png" alt="Github logo">With code/inspiration from Chris Ledet's emulator.</a>
 
 			<p id="copyright">&copy; Davis Goff <span id="year"></span></p>
 		</footer>

@@ -39,6 +39,11 @@ class Video {
 		this.states = newStates;
 	}
 
+	changePixelSize(width, height) {
+		this.pixel.width = width / 64;
+		this.pixel.height = height / 32;
+	}
+
 	// get the current state
 	current() {
 		return this.states;
