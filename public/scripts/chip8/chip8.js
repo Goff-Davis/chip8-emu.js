@@ -333,7 +333,7 @@ class Chip8 {
 
 							if (states[position.x][position.y] === pixelStates[column]) {
 								if (debug) {
-									console.log(`====\nXORed\n====`)
+									console.log(`====\nXORed\n====`);
 								}
 
 								result = false;
