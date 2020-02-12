@@ -115,6 +115,21 @@ class Chip8 {
 		this.cycle();
 	}
 
+	// decrement the timers
+	stepTimer() {
+		if (this.delayTimer > 0) {
+			this.delayTimer--;
+		}
+
+		if (this.soundTimer > 0) {
+			if (--this.soundTimer === 0) {
+				if (this.audio) {
+					this.audio.play();
+				}
+			}
+		}
+	}
+
 	// random int between 0 and 255 (inclusive)
 	getRand() {
 		return Math.floor(Math.random() * 256);
@@ -150,19 +165,6 @@ class Chip8 {
 		}
 
 		this.execute(opcode);
-
-		// decrement the timers
-		if (this.delayTimer > 0) {
-			this.delayTimer--;
-		}
-
-		if (this.soundTimer > 0) {
-			if (--this.soundTimer === 0) {
-				if (this.audio) {
-					this.audio.play();
-				}
-			}
-		}
 	}
 
 	execute(opcode) {

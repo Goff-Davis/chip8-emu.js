@@ -4,13 +4,14 @@ import Video from './video.js';
 const debug = false;
 
 class Machine {
-	constructor(videoSource, audioSource) {
+	constructor(videoSource, audioSource, clockRate) {
 		const video = new Video(videoSource);
 		const audio = audioSource ? new Audio(audioSource):null;
 
 		this.chip = new Chip8(video, audio);
-		this.clockRate = 300;
+		this.clockRate = clockRate;
 		this.stepID = null;
+		this.timerID = null;
 	}
 
 	// start the chip running at the defined clockrate
@@ -19,7 +20,7 @@ class Machine {
 			console.log(`Starting machine...`);
 		}
 
-		if (this.stepID) {
+		if (this.stepID || this.timerID) {
 			if (debug) {
 				console.log(`Cancel start.\nstepID: ${this.stepID}\n`);
 			}
@@ -30,6 +31,11 @@ class Machine {
 		this.stepID = window.setInterval(() => {
 			this.chip.step();
 		}, 1000 / this.clockRate);
+
+		// fixed at 60 Hz
+		this.timerID = window.setInterval(() => {
+			this.chip.stepTimer();
+		}, 1000 / 60);
 
 		if (debug) {
 			console.log(`Started.\nstepID: ${this.stepID}`);
@@ -67,6 +73,12 @@ class Machine {
 	// set the cpu input
 	setInput(input) {
 		this.chip.setInput(input);
+	}
+
+	setClockRate(rate) {
+		this.stop();
+		this.clockRate = rate;
+		this.start();
 	}
 
 	// load a rom
