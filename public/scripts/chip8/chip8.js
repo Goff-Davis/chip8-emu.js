@@ -24,7 +24,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = false;
+const debug = true;
 
 class Chip8 {
 	constructor(video, audio) {
@@ -143,11 +143,6 @@ class Chip8 {
 		// array for ease of accessing opcode "parameters"
 		const opcode = [this.memory[this.pc], this.memory[this.pc+1]];
 
-		if (debug) {
-			// set back 2 to see originating spot
-			console.log(`pc: ${this.pc}\nopcode: ${opcode[0].toString(16)} ${opcode[1].toString(16)}`);
-		}
-
 		if (this.pc >= 0xFFE) {
 			this.pc = START_ADDRESS;
 		}
@@ -182,71 +177,84 @@ class Chip8 {
 			case 0x0:
 				switch(opcode[1]) {
 					// clears the video
-					case 0xE0:
+					case 0xE0: {
 						this.video.clear();
 						break;
+					}
 					// return from subroutine
-					case 0xEE:
+					case 0xEE: {
 						this.pc = this.stack[--this.sp];
 						break;
+					}
 				}
 				break;
 			// 1NNN jump to NNN
-			case 0x1:
+			case 0x1: {
 				this.pc = nnn;
 				break;
+			}
 			// 2NNN CALL NNN
-			case 0x2:
+			case 0x2: {
 				this.stack[this.sp++] = this.pc;
 				this.pc = nnn;
 				break;
+			}
 			// 3XKK skip next instruction if VX == KK
-			case 0x3:
+			case 0x3: {
 				if (this.registers[vx] === kk) {
 					this.pc += 2;
 				}
 				break;
+			}
 			// 4XKK skip next instruction if VX != KK
-			case 0x4:
+			case 0x4: {
 				if (this.registers[vx] !== kk) {
 					this.pc += 2;
 				}
 				break;
+			}
 			// 5XY0 skip next instruction if VX == VY
-			case 0x5:
+			case 0x5: {
 				if (this.registers[vx] === this.registers[vy]) {
 					this.pc += 2;
 				}
 				break;
+			}
 			// 6XKK set VX = KK
-			case 0x6:
+			case 0x6: {
 				// need ternary for overflow (no carry)
 				this.registers[vx] = kk > 0xFF ? kk-0x100:kk;
 				break;
+			}
 			// 7XKK set VX = VX + KK
-			case 0x7:
-				this.registers[vx] += kk;
+			case 0x7: {
+				this.registers[vx] = (this.registers[vx] + kk) % 0x100;
 				break;
-			case 0x8:
+			}
+			case 0x8: {
 				switch(n) {
 					// 8XY0 set VX = VY
-					case 0x0:
+					case 0x0: {
 						this.registers[vx] = this.registers[vy];
 						break;
+					}
 					// 8XY1 set VX = VX OR VY
-					case 0x1:
+					case 0x1: {
 						this.registers[vx] |= this.registers[vy];
 						break;
+					}
 					// 8XY2 set VX = VX AND VY
-					case 0x2:
+					case 0x2: {
 						this.registers[vx] &= this.registers[vy];
 						break;
+					}
 					// 8XY3 set VX = VX XOR VY
-					case 0x3:
+					case 0x3: {
 						this.registers[vx] ^= this.registers[vy];
 						break;
+					}
 					// 8XY4 set VX = VX + VY set VF = carry
-					case 0x4:
+					case 0x4: {
 						const sum = this.registers[vx] + this.registers[vy];
 
 						if (sum > 0xFF) {
@@ -258,54 +266,78 @@ class Chip8 {
 
 						this.registers[vx] = sum % 0x100;
 						break;
+					}
 					// 8XY5 set VX = VX - VY set VF = NOT borrow
-					case 0x5:
+					case 0x5: {
+						const difference = (this.registers[vx] - this.registers[vy]) % 0x100;
+
 						this.registers[0xF] = this.registers[vx] > this.registers[vy] ? 1:0;
 
-						// @TODO if this creates overflow issues
-						this.registers[vx] -= this.registers[vy];
+						if (difference < 0) {
+							this.registers[vx] = 0x100 + difference;
+						}
+						else {
+							this.registers[vx] = difference;
+						}
 						break;
+					}
 					// 8XY6 set VX = VX >> 1
-					case 0x6:
+					// @TODO fail tests
+					case 0x6: {
 						this.registers[0xF] = this.registers[vx] % 0x10;
 						this.registers[vx] /= 2;
 						break;
+					}
 					// 8XY7 set VX = VY - VX set VF = NOT borrow
-					case 0x7:
+					case 0x7: {
+						const difference = (this.registers[vy] - this.registers[vx]) % 0x100;
+
 						this.registers[0xF] = this.registers[vy] > this.registers[vx] ? 1:0;
 
-						// @TODO if this creates overflow issues
-						this.registers[vy] -= this.registers[vx];
+						if (difference < 0) {
+							this.registers[vx] = 0x100 + difference;
+						}
+						else {
+							this.registers[vx] = difference;
+						}
 						break;
+					}
 					// 8XYE set VX = VX << 1
-					case 0xE:
+					// @TODO fail tests
+					case 0xE: {
 						this.registers[0xF] = Math.floor(this.registers[vx] / 0x10);
 						this.registers[vx] *= 2;
 						break;
+					}
 				}
 				break;
+			}
 			// 9XY0 skip next instruction if VX != VY
-			case 0x9:
+			case 0x9: {
 				if (this.registers[vx] !== this.registers[vy]) {
 					this.pc += 2;
 				}
 				break;
+			}
 			// ANNN set I = NNN
-			case 0xA:
+			case 0xA: {
 				this.index = nnn;
 				break;
+			}
 			// 0xBNNN jump to NNN + V0
-			case 0xB:
+			case 0xB: {
 				this.pc = this.registers[0] + nnn;
 				break;
+			}
 			// CXKK set VX = random AND KK
-			case 0xC:
+			case 0xC: {
 				// @TODO check that this has same result as unsigned (prob not)
 				this.registers[vx] = getRand() & kk;
 				break;
+			}
 			// DXYN draw sprit at VX VY with height N
 			// VF = collision with already drawn pixel
-			case 0xD:
+			case 0xD: {
 				const states = this.video.current();
 				const start = {
 					x: this.registers[vx],
@@ -336,10 +368,6 @@ class Chip8 {
 							let result = true;
 
 							if (states[position.x][position.y] === pixelStates[drawingIndex]) {
-								if (debug) {
-									console.log(`====\nXORed\n====`);
-								}
-
 								result = false;
 								this.registers[0xF] = 1;
 							}
@@ -351,7 +379,8 @@ class Chip8 {
 
 				this.video.draw(states);
 				break;
-			case 0xE:
+			}
+			case 0xE: {
 				switch(opcode[1]) {
 					// EX9E skip next instruction if key with value VX is pressed
 					case 0x9E:
@@ -367,38 +396,47 @@ class Chip8 {
 						break;
 				}
 				break;
-			case 0xF:
+			}
+			case 0xF: {
 				switch(opcode[1]) {
 					// FX07 set VX = delay timer value
-					case 0x07:
+					case 0x07: {
 						this.registers[vx] = this.delayTimer;
 						break;
+					}
 					// FX0A wait for key press then store key value in VX
-					case 0x0A:
+					case 0x0A: {
 						if (this.awaitInput) {
 							this.registers[vx] = this.input;
 						}
 						break;
+					}
 					// FX15 set delay timer = VX
-					case 0x15:
+					// @TODO fail tests maybe?
+					case 0x15: {
 						this.delayTimer = this.registers[vx];
 						break;
+					}
 					// FX18 set sound timer = VX
-					case 0x18:
+					case 0x18: {
 						this.soundTimer = this.registers[vx];
 						break;
+					}
 					// FX1E set I = I + VX
-					case 0x1E:
+					case 0x1E: {
 						// @TODO check overflow issues
 						this.index += this.registers[vx];
 						break;
+					}
 					// FX29 set I = location of sprite for VX
-					case 0x29:
+					case 0x29: {
 						// 5* because each char is 5 bytes
 						this.index = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
 						break;
+					}
 					// FX33 store BCD of VX in I, I+1, and I+2
-					case 0x33:
+					// @TODO fail tests
+					case 0x33: {
 						let value = this.registers[vx];
 
 						// ones
@@ -412,20 +450,25 @@ class Chip8 {
 						// hundreds
 						this.memory[this.index] = value % 10;
 						break;
+					}
 					// FX55 store V0 through VX in memory starting at I
-					case 0x55:
+					// @TODO fail tests maybe?
+					case 0x55: {
 						for (let i=0;i<vx;i++) {
 							this.memory[this.index+i] = this.registers[i];
 						}
 						break;
+					}
 					// FX65 read V0 through VX from memory starting at I
-					case 0x65:
+					case 0x65: {
 						for (let i=0;i<vx;i++) {
 							this.registers[i] = this.memory[this.index+i];
 						}
 						break;
+					}
 				}
 				break;
+			}
 			default:
 				console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 		}
