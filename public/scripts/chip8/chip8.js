@@ -285,8 +285,9 @@ class Chip8 {
 					// 8XY6 set VX = VX >> 1 lsb in vf
 					// @TODO fail tests
 					case 0x6: {
-						// this isn't lsb
-						this.registers[0xF] = this.registers[vx] % 0x10;
+						const binary = this.registers[vx].toString(2);
+
+						this.registers[0xF] = binary[binary.length - 1] === `1` ? 1:0;
 						this.registers[vx] = Math.floor(this.registers[vx] / 2);
 						break;
 					}
@@ -306,8 +307,10 @@ class Chip8 {
 					}
 					// 8XYE set VX = VX << 1 msb in vf
 					case 0xE: {
-						this.registers[0xF] = Math.floor(this.registers[vx] / 0x10);
-						this.registers[vx] *= 2;
+						const binary = this.registers[vx].toString(2);
+
+						this.registers[0xF] = binary[0] === `1` ? 1:0;
+						this.registers[vx] = (this.registers[vx] * 2) % 0x100;
 						break;
 					}
 					default:
