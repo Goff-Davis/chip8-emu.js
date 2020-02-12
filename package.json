@@ -4,7 +4,7 @@
 	"description": "Chip8 Emulator in JavaScript",
 	"main": "index.js",
 	"scripts": {
-		"lint": "eslint src/**/*.js",
+		"lint": "eslint './public/**/*.js'",
 		"start": "node ./index.js",
 		"devstart": "nodemon ./index.js"
 	},
