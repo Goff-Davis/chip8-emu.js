@@ -24,7 +24,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = true;
+const debug = false;
 
 class Chip8 {
 	constructor(video, audio) {
@@ -307,17 +307,21 @@ class Chip8 {
 			// VF = collision with already drawn pixel
 			case 0xD:
 				const states = this.video.current();
+				const start = {
+					x: this.registers[vx],
+					y: this.registers[vy]
+				};
 
-				for (let row=0;row<n;row++) {
-					const sprite = this.memory[this.index+row];
+				for (let spriteIndex=0;spriteIndex<n;spriteIndex++) {
+					const sprite = this.memory[this.index+spriteIndex];
 					const pixelStates = this.byteToSwitch(sprite);
 
 					this.registers[0xF] = 0;
 
-					for (let column=0;column<8;column++) {
+					for (let drawingIndex=0;drawingIndex<8;drawingIndex++) {
 						const position = {
-							x: (this.registers[vx] + row) % VIDEO_WIDTH,
-							y: (this.registers[vy] + column) % VIDEO_HEIGHT
+							x: (start.x + drawingIndex) % VIDEO_WIDTH,
+							y: (start.y + spriteIndex) % VIDEO_HEIGHT
 						};
 
 						if (position.x > 63 || position.x < 0) {
@@ -328,10 +332,10 @@ class Chip8 {
 							console.error(`Exceeded height without wrapping`);
 						}
 
-						if (pixelStates[column]) {
+						if (pixelStates[drawingIndex]) {
 							let result = true;
 
-							if (states[position.x][position.y] === pixelStates[column]) {
+							if (states[position.x][position.y] === pixelStates[drawingIndex]) {
 								if (debug) {
 									console.log(`====\nXORed\n====`);
 								}
