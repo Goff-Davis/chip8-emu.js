@@ -3,8 +3,7 @@ import Machine from './chip8/machine.js';
 const debug = false;
 
 const display = document.getElementById(`display`);
-const startBtn = document.getElementById(`start`);
-const stopBtn = document.getElementById(`stop`);
+const power = document.getElementById(`power`);
 const romSelect = document.getElementById(`roms`);
 const clockRate = document.getElementById(`clock-rate`);
 const upload = document.getElementById(`upload`);
@@ -97,8 +96,16 @@ const loadROM = name => {
 		});
 };
 
-startBtn.onclick = () => vm.start();
-stopBtn.onclick = () => vm.stop();
+power.onclick = event => {
+	if (power.innerHTML === `Start`) {
+		power.innerHTML = `Stop`;
+		vm.start();
+	}
+	else {
+		power.innerHTML = `Start`;
+		vm.stop();
+	}
+};
 
 romSelect.onchange = event => {
 	loadROM(event.target.value);
