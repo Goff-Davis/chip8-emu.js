@@ -55,9 +55,15 @@ select {
 	}
 }
 
+/* Main styling */
+
 * {
 	--white: #f2f2f2;
 	--black: #0d0d0d;
+}
+
+*[aria-hidden="true"] {
+	display: none;
 }
 
 body {

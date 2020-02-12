@@ -2,13 +2,17 @@ import Machine from './chip8/machine.js';
 
 const debug = false;
 
+document.getElementById('year').innerHTML = new Date().getFullYear();
+
 const display = document.getElementById(`display`);
 const power = document.getElementById(`power`);
 const romSelect = document.getElementById(`roms`);
 const clockRate = document.getElementById(`clock-rate`);
 const upload = document.getElementById(`upload`);
+const ctrlToggle = document.getElementById(`ctrl-toggle`);
+const controls = document.getElementById(`controls`);
 
-const vm = new Machine(display, null, parseInt(clockRate.value));
+const vm = new Machine(display, parseInt(clockRate.value));
 
 // gets input keys for the machine
 document.onkeydown = event => {
@@ -117,6 +121,15 @@ clockRate.onchange = event => {
 
 upload.onchange = event => {
 	readROM(event.target.files[0]);
+};
+
+ctrlToggle.onclick = event => {
+	if (controls.getAttribute(`aria-hidden`) === `true`) {
+		controls.setAttribute(`aria-hidden`, `false`);
+	}
+	else {
+		controls.setAttribute(`aria-hidden`, `true`);
+	}
 };
 
 if (upload.value !== ``) {
