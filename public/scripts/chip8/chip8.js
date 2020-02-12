@@ -1,7 +1,6 @@
 const START_ADDRESS = 0x200; // 512
 
 const FONTSET_START_ADDRESS = 0x50;
-const FONTSET_SIZE = 80;
 const fontset = [
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -186,6 +185,8 @@ class Chip8 {
 						this.pc = this.stack[--this.sp];
 						break;
 					}
+					default:
+						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
 			// 1NNN jump to NNN
@@ -309,6 +310,8 @@ class Chip8 {
 						this.registers[vx] *= 2;
 						break;
 					}
+					default:
+						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
 			}
@@ -332,7 +335,7 @@ class Chip8 {
 			// CXKK set VX = random AND KK
 			case 0xC: {
 				// @TODO check that this has same result as unsigned (prob not)
-				this.registers[vx] = getRand() & kk;
+				this.registers[vx] = this.getRand() & kk;
 				break;
 			}
 			// DXYN draw sprit at VX VY with height N
@@ -394,6 +397,8 @@ class Chip8 {
 							this.pc += 2;
 						}
 						break;
+					default:
+						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
 			}
@@ -466,6 +471,8 @@ class Chip8 {
 						}
 						break;
 					}
+					default:
+						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
 			}
