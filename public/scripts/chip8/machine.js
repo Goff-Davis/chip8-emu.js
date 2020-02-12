@@ -76,6 +76,7 @@ class Machine {
 		this.chip.setInput(input);
 	}
 
+	// sets the clock rate of the cpu
 	setClockRate(rate) {
 		this.stop();
 		this.clockRate = rate;
