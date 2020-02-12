@@ -54,6 +54,7 @@ class Machine {
 		}
 
 		this.stepID = null;
+		this.timerID = null;
 
 		if (debug) {
 			console.log(`Stopped.`);
