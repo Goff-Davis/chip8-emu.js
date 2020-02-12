@@ -282,11 +282,12 @@ class Chip8 {
 						}
 						break;
 					}
-					// 8XY6 set VX = VX >> 1
+					// 8XY6 set VX = VX >> 1 lsb in vf
 					// @TODO fail tests
 					case 0x6: {
+						// this isn't lsb
 						this.registers[0xF] = this.registers[vx] % 0x10;
-						this.registers[vx] /= 2;
+						this.registers[vx] = Math.floor(this.registers[vx] / 2);
 						break;
 					}
 					// 8XY7 set VX = VY - VX set VF = NOT borrow
@@ -303,8 +304,7 @@ class Chip8 {
 						}
 						break;
 					}
-					// 8XYE set VX = VX << 1
-					// @TODO fail tests
+					// 8XYE set VX = VX << 1 msb in vf
 					case 0xE: {
 						this.registers[0xF] = Math.floor(this.registers[vx] / 0x10);
 						this.registers[vx] *= 2;
@@ -446,11 +446,11 @@ class Chip8 {
 
 						// ones
 						this.memory[this.index+2] = value % 10;
-						value /= 10;
+						value = Math.floor(value / 10);
 
 						// tens
 						this.memory[this.index+1] = value % 10;
-						value /= 10;
+						value = Math.floor(value / 10);
 
 						// hundreds
 						this.memory[this.index] = value % 10;
@@ -459,14 +459,14 @@ class Chip8 {
 					// FX55 store V0 through VX in memory starting at I
 					// @TODO fail tests maybe?
 					case 0x55: {
-						for (let i=0;i<vx;i++) {
+						for (let i=0;i<vx+1;i++) {
 							this.memory[this.index+i] = this.registers[i];
 						}
 						break;
 					}
 					// FX65 read V0 through VX from memory starting at I
 					case 0x65: {
-						for (let i=0;i<vx;i++) {
+						for (let i=0;i<vx+1;i++) {
 							this.registers[i] = this.memory[this.index+i];
 						}
 						break;
