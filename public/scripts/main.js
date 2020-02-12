@@ -7,9 +7,11 @@ const startBtn = document.getElementById(`start`);
 const stopBtn = document.getElementById(`stop`);
 const romSelect = document.getElementById(`roms`);
 const clockRate = document.getElementById(`clock-rate`);
+const upload = document.getElementById(`upload`);
 
 const vm = new Machine(display, null, parseInt(clockRate.value));
 
+// gets input keys for the machine
 document.onkeydown = event => {
 	let input;
 
@@ -72,6 +74,7 @@ document.onkeydown = event => {
 	}
 };
 
+// reads the file and passes to vm
 const readROM = (file, callback) => {
 	const reader = new FileReader();
 
@@ -79,19 +82,18 @@ const readROM = (file, callback) => {
 		const buffer = event.target.result;
 		const data = new Uint8Array(buffer);
 
-		callback(data);
+		vm.boot(data);
 	};
 
 	reader.readAsArrayBuffer(file);
 };
 
+// retrieves selected file
 const loadROM = name => {
 	fetch(`../../roms/${name}`)
 		.then(r => r.blob())
 		.then(blob => {
-			readROM(blob, rom => {
-				vm.boot(rom);
-			});
+			readROM(blob);
 		});
 };
 
@@ -106,4 +108,13 @@ clockRate.onchange = event => {
 	vm.setClockRate(parseInt(event.target.value));
 };
 
-loadROM(romSelect.value);
+upload.onchange = event => {
+	readROM(event.target.files[0]);
+};
+
+if (upload.value !== ``) {
+	readROM(upload.files[0])
+}
+else {
+	loadROM(romSelect.value);
+}
