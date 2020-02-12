@@ -25,13 +25,13 @@ class Video {
 			console.log(newStates);
 		}
 
-		for (let i=0;i<this.resolution.width;i++) {
-			for (let j=0;j<this.resolution.height;j++) {
-				if (newStates[i][j]) {
-					this.context.fillRect(i * this.pixel.width, j * this.pixel.height, this.pixel.width, this.pixel.height);
+		for (let x=0;x<this.resolution.width;x++) {
+			for (let y=0;y<this.resolution.height;y++) {
+				if (newStates[x][y]) {
+					this.context.fillRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 				else {
-					this.context.clearRect(i * this.pixel.width, i * this.pixel.height, this.pixel.width, this.pixel.height);
+					this.context.clearRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 			}
 		}
@@ -53,11 +53,11 @@ class Video {
 	clearStates() {
 		const states = new Array(64);
 
-		for (let i=0;i<64;i++) {
-			states[i] = new Array(32);
+		for (let x=0;x<64;x++) {
+			states[x] = new Array(32);
 
-			for (let j=0;j<32;j++) {
-				states[i][j] = false;
+			for (let y=0;y<32;y++) {
+				states[x][y] = false;
 			}
 		}
 
