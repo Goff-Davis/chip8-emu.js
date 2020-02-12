@@ -23,7 +23,7 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = true;
+const debug = false;
 
 class Chip8 {
 	constructor(video, audio) {
@@ -309,7 +309,7 @@ class Chip8 {
 					case 0xE: {
 						const binary = this.registers[vx].toString(2);
 
-						this.registers[0xF] = binary[0] === `1` ? 1:0;
+						this.registers[0xF] = binary[0] !== `1` ? 0:binary.length < 8 ? 0:1;
 						this.registers[vx] = (this.registers[vx] * 2) % 0x100;
 						break;
 					}
