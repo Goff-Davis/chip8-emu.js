@@ -5,8 +5,10 @@ const debug = false;
 const display = document.getElementById(`display`);
 const startBtn = document.getElementById(`start`);
 const stopBtn = document.getElementById(`stop`);
+const romSelect = document.getElementById(`roms`);
+const clockRate = document.getElementById(`clock-rate`);
 
-const vm = new Machine(display, null);
+const vm = new Machine(display, null, parseInt(clockRate.value));
 
 document.onkeydown = event => {
 	let input;
@@ -83,17 +85,25 @@ const readROM = (file, callback) => {
 	reader.readAsArrayBuffer(file);
 };
 
+const loadROM = name => {
+	fetch(`../../roms/${name}`)
+		.then(r => r.blob())
+		.then(blob => {
+			readROM(blob, rom => {
+				vm.boot(rom);
+			});
+		});
+};
+
 startBtn.onclick = () => vm.start();
 stopBtn.onclick = () => vm.stop();
 
-const romName = `test1.ch8`;
+romSelect.onchange = event => {
+	loadROM(event.target.value);
+};
 
-fetch(`../../roms/${romName}`)
-	.then(r => {
-		return r.blob();
-	})
-	.then(blob => {
-		readROM(blob, rom => {
-			vm.boot(rom);
-		});
-	});
+clockRate.onchange = event => {
+	vm.setClockRate(parseInt(event.target.value));
+};
+
+loadROM(romSelect.value);
