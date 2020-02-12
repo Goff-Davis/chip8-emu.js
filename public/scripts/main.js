@@ -86,7 +86,7 @@ const readROM = (file, callback) => {
 startBtn.onclick = () => vm.start();
 stopBtn.onclick = () => vm.stop();
 
-const romName = `test2.ch8`;
+const romName = `test1.ch8`;
 
 fetch(`../../roms/${romName}`)
 	.then(r => {
