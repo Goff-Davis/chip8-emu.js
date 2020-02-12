@@ -4,11 +4,10 @@ import Video from './video.js';
 const debug = false;
 
 class Machine {
-	constructor(videoSource, audioSource, clockRate) {
+	constructor(videoSource, clockRate) {
 		const video = new Video(videoSource);
-		const audio = audioSource ? new Audio(audioSource):null;
 
-		this.chip = new Chip8(video, audio);
+		this.chip = new Chip8(video);
 		this.clockRate = clockRate;
 		this.stepID = null;
 		this.timerID = null;

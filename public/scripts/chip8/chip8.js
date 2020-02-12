@@ -26,7 +26,7 @@ const VIDEO_WIDTH = 64;
 const debug = false;
 
 class Chip8 {
-	constructor(video, audio) {
+	constructor(video) {
 		// initial cpu state
 		this.registers = new Array(16);
 		this.index = 0;
@@ -38,7 +38,7 @@ class Chip8 {
 		this.memory = new Array(4096);
 
 		// emulator state
-		this.audio = audio;
+		this.audio = new Audio(`./sounds/beep.wav`);
 		this.video = video;
 		this.awaitInput = false;
 		this.input = 0;
@@ -57,6 +57,7 @@ class Chip8 {
 
 		if (debug) {
 			console.log(`Loaded.`);
+			this.audio.play();
 		}
 	}
 
