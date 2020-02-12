@@ -59,7 +59,10 @@ select {
 
 * {
 	--white: #f2f2f2;
-	--black: #0d0d0d;
+	--black: #1a1a1a;
+	--accent: #00bd9d;
+	--buttons: #9b287b;
+	--focus: #5c164e;
 }
 
 *[aria-hidden="true"] {
@@ -80,12 +83,71 @@ body {
 	justify-content: center;
 }
 
+header {
+	font-size: 20px;
+}
+
 main {
 	flex: 1 0 auto;
+	font-size: 18px;
+}
+
+footer {
+	flex-shrink: 0;
+	font-size: 16px;
 }
 
 #display {
-	background-color: #000;
+	background-color: var(--black);
 
 	margin: 30px;
+}
+
+h1, h2 {
+	color: var(--accent);
+}
+
+button {
+	background-color: var(--buttons);
+	color: var(--white);
+	border: none;
+	border-radius: 2px;
+
+	padding: 0.2em 1em;
+}
+
+button:hover, button:focus {
+	background-color: var(--focus);
+	cursor: pointer;
+}
+
+/* Custom file upload styling */
+
+[type="file"] {
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+[type="file"] + label {
+	background-color: var(--buttons);
+	border-radius: 2px;
+	color: var(--white);
+	cursor: pointer;
+	display: inline-block;
+	padding: 0.2em 1em;
+}
+
+[type="file"]:focus + label,
+[type="file"] + label:hover {
+	background-color: var(--focus);
+}
+
+[type="file"]:focus + label {
+	outline: 1px dotted var(--black);
 }

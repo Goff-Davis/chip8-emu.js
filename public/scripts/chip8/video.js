@@ -15,7 +15,7 @@ class Video {
 		};
 
 		this.context = container.getContext(`2d`);
-		this.context.fillStyle = `#FFFFFF`;
+		this.context.fillStyle = `#f2f2f2`;
 	}
 
 	// draw the video
