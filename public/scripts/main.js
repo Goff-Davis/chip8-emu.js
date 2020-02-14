@@ -142,6 +142,7 @@ ctrlToggle.onclick = () => {
 	}
 };
 
+// create vm and set the display size
 const vm = new Machine(display, parseInt(clockRate.value));
 setDisplaySize(parseInt(screenSizeMultiplier.value));
 

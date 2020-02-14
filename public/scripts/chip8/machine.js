@@ -6,6 +6,7 @@ class Machine {
 		this.video = new Video(videoSource);
 
 		this.chip = new Chip8(this.video);
+
 		this.clockRate = clockRate;
 		this.stepID = null;
 		this.timerID = null;
@@ -17,6 +18,7 @@ class Machine {
 			return;
 		}
 
+		// user defined refresh rate
 		this.stepID = window.setInterval(() => {
 			this.chip.step();
 		}, 1000 / this.clockRate);
@@ -31,6 +33,10 @@ class Machine {
 	stop() {
 		if (this.stepID) {
 			window.clearInterval(this.stepID);
+		}
+
+		if (this.timerID) {
+			window.clearInterval(this.timerID);
 		}
 
 		this.stepID = null;
@@ -55,8 +61,9 @@ class Machine {
 		this.start();
 	}
 
-	setDisplaySize(width, height, display) {
-		this.video.setDisplaySize(width, height, display);
+	// change size of chip8 display
+	setDisplaySize(display) {
+		this.video.setDisplaySize(display);
 	}
 
 	// load a rom

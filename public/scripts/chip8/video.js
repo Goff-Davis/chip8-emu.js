@@ -34,11 +34,13 @@ class Video {
 		this.states = newStates;
 	}
 
+	// set size of canvas and adjust pixel size accordingly
 	setDisplaySize(display) {
 		this.container = display;
 		this.pixel.width = this.container.width / 64;
 		this.pixel.height = this.container.height / 32;
 
+		// redraw with new settings
 		this.draw(this.current());
 	}
 

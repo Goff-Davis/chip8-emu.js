@@ -113,6 +113,7 @@ class Chip8 {
 		return Math.floor(Math.random() * 256);
 	}
 
+	// convert the pixel info into true/false
 	byteToSwitch(byte) {
 		return [
 			(byte & 0x80) == 0x80,
@@ -124,10 +125,6 @@ class Chip8 {
 			(byte & 0x02) == 0x02,
 			(byte & 0x01) == 0x01
 		];
-	}
-
-	dump() {
-		console.log(this);
 	}
 
 	// completes one cpu cycle
