@@ -108,7 +108,7 @@ const setDisplaySize = multiplier => {
 
 // show error message
 const error = () => {
-	errorNotifier.innerHTML = `Something went wrong while running this ROM. Please reload the page and try again or try a different ROM. Check the browser's console for details.`
+	errorNotifier.innerHTML = `Something went wrong while running this ROM. Please reload the page and try again or try a different ROM. Check the browser's console for details.`;
 	errorNotifier.setAttribute(`aria-hidden`, `false`);
 };
 
