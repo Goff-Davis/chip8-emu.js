@@ -2,10 +2,12 @@ import Chip8 from './chip8.js';
 import Video from './video.js';
 
 class Machine {
-	constructor(videoSource, clockRate) {
+	constructor(videoSource, clockRate, errorHandling) {
 		this.video = new Video(videoSource);
 
-		this.chip = new Chip8(this.video);
+		this.chip = new Chip8(this.video, errorHandling.error);
+
+		this.clearError = errorHandling.clearError;
 
 		this.clockRate = clockRate;
 		this.stepID = null;
@@ -45,6 +47,7 @@ class Machine {
 
 	// stop running and reset the cpu
 	reset() {
+		this.clearError();
 		this.stop();
 		this.chip.reset();
 	}
@@ -68,6 +71,7 @@ class Machine {
 
 	// load a rom
 	boot(rom) {
+		this.clearError();
 		this.stop();
 		this.chip.load(rom);
 		this.start();

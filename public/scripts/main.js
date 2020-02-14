@@ -10,6 +10,7 @@ const clockRate = document.getElementById(`clock-rate`);
 const upload = document.getElementById(`upload`);
 const ctrlToggle = document.getElementById(`ctrl-toggle`);
 const controls = document.getElementById(`controls`);
+const errorNotifier = document.getElementById(`error-notifier`);
 
 // gets input keys for the machine
 document.onkeydown = event => {
@@ -105,6 +106,18 @@ const setDisplaySize = multiplier => {
 	vm.setDisplaySize(display);
 };
 
+// show error message
+const error = () => {
+	errorNotifier.innerHTML = `Something went wrong while running this ROM. Please reload the page and try again or try a different ROM. Check the browser's console for details.`
+	errorNotifier.setAttribute(`aria-hidden`, `false`);
+};
+
+// hide error message
+const clearError = () => {
+	errorNotifier.setAttribute(`aria-hidden`, `true`);
+	errorNotifier.innerHTML = ``;
+};
+
 // toggle vm on and off
 power.onclick = () => {
 	if (power.innerHTML === `Start`) {
@@ -143,7 +156,7 @@ ctrlToggle.onclick = () => {
 };
 
 // create vm and set the display size
-const vm = new Machine(display, parseInt(clockRate.value));
+const vm = new Machine(display, parseInt(clockRate.value), { error: error, clearError: clearError });
 setDisplaySize(parseInt(screenSizeMultiplier.value));
 
 // either load a user uploaded ROM or the selected ROM

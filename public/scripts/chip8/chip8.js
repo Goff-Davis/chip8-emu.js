@@ -24,7 +24,7 @@ const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
 class Chip8 {
-	constructor(video) {
+	constructor(video, error) {
 		// initial cpu state
 		this.registers = new Array(16);
 		this.index = 0;
@@ -40,6 +40,9 @@ class Chip8 {
 		this.video = video;
 		this.awaitInput = false;
 		this.input = 0;
+
+		// callback for error handling
+		this.error = error;
 
 		this.clear();
 	}
@@ -163,6 +166,7 @@ class Chip8 {
 						break;
 					}
 					default:
+						this.error();
 						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
@@ -291,6 +295,7 @@ class Chip8 {
 						break;
 					}
 					default:
+						this.error();
 						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
@@ -339,14 +344,6 @@ class Chip8 {
 							y: (start.y + spriteIndex) % VIDEO_HEIGHT
 						};
 
-						if (position.x > 63 || position.x < 0) {
-							console.error(`Exceeded width without wrapping`);
-						}
-
-						if (position.y > 31 || position.y < 0) {
-							console.error(`Exceeded height without wrapping`);
-						}
-
 						if (pixelStates[drawingIndex]) {
 							let result = true;
 
@@ -378,6 +375,7 @@ class Chip8 {
 						}
 						break;
 					default:
+						this.error();
 						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
@@ -452,11 +450,13 @@ class Chip8 {
 						break;
 					}
 					default:
+						this.error();
 						console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 				}
 				break;
 			}
 			default:
+				this.error();
 				console.error(`Error, undefined opcode ${opcode[0].toString(16)}${opcode[1].toString(16)}`);
 		}
 	}
