@@ -23,8 +23,6 @@ const fontset = [
 const VIDEO_HEIGHT = 32;
 const VIDEO_WIDTH = 64;
 
-const debug = false;
-
 class Chip8 {
 	constructor(video) {
 		// initial cpu state
@@ -48,24 +46,11 @@ class Chip8 {
 
 	// load rom into memory
 	load(rom) {
-		if (debug) {
-			console.log(`Loading rom...`);
-		}
-
 		this.clear();
 		this.copy(START_ADDRESS, rom);
-
-		if (debug) {
-			console.log(`Loaded.`);
-			this.audio.play();
-		}
 	}
 
 	clear() {
-		if (debug) {
-			console.log(`Cleared memory.`);
-		}
-
 		// clear registers
 		this.registers.fill(0, 0);
 
@@ -89,16 +74,8 @@ class Chip8 {
 	// param start = (unsigned) int
 	// param data = string
 	copy(start, data) {
-		if (debug) {
-			console.log(`Copying data...`);
-		}
-
 		for (let i=0;i<data.length;i++) {
 			this.memory[start + i] = data[i];
-		}
-
-		if (debug) {
-			console.log(`Copied.`);
 		}
 	}
 

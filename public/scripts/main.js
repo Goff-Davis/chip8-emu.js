@@ -1,19 +1,15 @@
 import Machine from './chip8/machine.js';
 
-const debug = false;
-
-document.getElementById('year').innerHTML = new Date().getFullYear();
+document.getElementById(`year`).innerHTML = new Date().getFullYear();
 
 const display = document.getElementById(`display`);
 const power = document.getElementById(`power`);
 const romSelect = document.getElementById(`roms`);
-const screenSize = document.getElementById(`screen-size`);
+const screenSizeMultiplier = document.getElementById(`screen-size-multiplier`);
 const clockRate = document.getElementById(`clock-rate`);
 const upload = document.getElementById(`upload`);
 const ctrlToggle = document.getElementById(`ctrl-toggle`);
 const controls = document.getElementById(`controls`);
-
-const vm = new Machine(display, parseInt(clockRate.value));
 
 // gets input keys for the machine
 document.onkeydown = event => {
@@ -79,7 +75,7 @@ document.onkeydown = event => {
 };
 
 // reads the file and passes to vm
-const readROM = (file, callback) => {
+const readROM = file => {
 	const reader = new FileReader();
 
 	reader.onload = event => {
@@ -101,17 +97,16 @@ const loadROM = name => {
 		});
 };
 
-const changeSize = size => {
-	const width = 64 * size;
-	const height = 32 * size;
+// update size of chip8 display
+const setDisplaySize = multiplier => {
+	display.width = 64 * multiplier;
+	display.height = 32 * multiplier;
 
-	display.style.width = width;
-	display.style.height = height;
-
-	vm.setDisplaySize(width, height);
+	vm.setDisplaySize(display);
 };
 
-power.onclick = event => {
+// toggle vm on and off
+power.onclick = () => {
 	if (power.innerHTML === `Start`) {
 		power.innerHTML = `Stop`;
 		vm.start();
@@ -126,9 +121,9 @@ romSelect.onchange = event => {
 	loadROM(event.target.value);
 };
 
-screenSize.onchange = event => {
-	changeSize(parseInt(event.target.value));
-}
+screenSizeMultiplier.onchange = event => {
+	setDisplaySize(parseInt(event.target.value));
+};
 
 clockRate.onchange = event => {
 	vm.setClockRate(parseInt(event.target.value));
@@ -138,7 +133,7 @@ upload.onchange = event => {
 	readROM(event.target.files[0]);
 };
 
-ctrlToggle.onclick = event => {
+ctrlToggle.onclick = () => {
 	if (controls.getAttribute(`aria-hidden`) === `true`) {
 		controls.setAttribute(`aria-hidden`, `false`);
 	}
@@ -147,10 +142,12 @@ ctrlToggle.onclick = event => {
 	}
 };
 
-changeSize(parseInt(screenSize.value));
+const vm = new Machine(display, parseInt(clockRate.value));
+setDisplaySize(parseInt(screenSizeMultiplier.value));
 
+// either load a user uploaded ROM or the selected ROM
 if (upload.value !== ``) {
-	readROM(upload.files[0])
+	readROM(upload.files[0]);
 }
 else {
 	loadROM(romSelect.value);

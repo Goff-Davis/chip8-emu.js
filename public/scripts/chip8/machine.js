@@ -1,13 +1,11 @@
 import Chip8 from './chip8.js';
 import Video from './video.js';
 
-const debug = false;
-
 class Machine {
 	constructor(videoSource, clockRate) {
-		const video = new Video(videoSource);
+		this.video = new Video(videoSource);
 
-		this.chip = new Chip8(video);
+		this.chip = new Chip8(this.video);
 		this.clockRate = clockRate;
 		this.stepID = null;
 		this.timerID = null;
@@ -15,15 +13,7 @@ class Machine {
 
 	// start the chip running at the defined clockrate
 	start() {
-		if (debug) {
-			console.log(`Starting machine...`);
-		}
-
 		if (this.stepID || this.timerID) {
-			if (debug) {
-				console.log(`Cancel start.\nstepID: ${this.stepID}\n`);
-			}
-
 			return;
 		}
 
@@ -35,37 +25,20 @@ class Machine {
 		this.timerID = window.setInterval(() => {
 			this.chip.stepTimer();
 		}, 1000 / 60);
-
-		if (debug) {
-			console.log(`Started.\nstepID: ${this.stepID}`);
-			this.chip.dump();
-		}
 	}
 
 	// stop the cpu from running
 	stop() {
-		if (debug) {
-			console.log(`Stopping...`);
-		}
-
 		if (this.stepID) {
 			window.clearInterval(this.stepID);
 		}
 
 		this.stepID = null;
 		this.timerID = null;
-
-		if (debug) {
-			console.log(`Stopped.`);
-		}
 	}
 
 	// stop running and reset the cpu
 	reset() {
-		if (debug) {
-			console.log(`Resetting...`);
-		}
-
 		this.stop();
 		this.chip.reset();
 	}
@@ -82,16 +55,12 @@ class Machine {
 		this.start();
 	}
 
-	setDisplaySize(width, height) {
-		this.video.changePixelSize(width, height);
+	setDisplaySize(width, height, display) {
+		this.video.setDisplaySize(width, height, display);
 	}
 
 	// load a rom
 	boot(rom) {
-		if (debug) {
-			console.log(`Booting...`);
-		}
-
 		this.stop();
 		this.chip.load(rom);
 		this.start();

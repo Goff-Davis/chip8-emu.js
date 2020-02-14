@@ -1,7 +1,7 @@
-const debug = false;
-
 class Video {
 	constructor(container) {
+		this.container = container;
+
 		this.states = this.clearStates();
 
 		this.resolution = {
@@ -13,25 +13,20 @@ class Video {
 			width: container.width / 64,
 			height: container.height / 32
 		};
-
-		this.context = container.getContext(`2d`);
-		this.context.fillStyle = `#f2f2f2`;
 	}
 
 	// draw the video
 	draw(newStates) {
-		if (debug) {
-			console.log(`Drawing`);
-			console.log(newStates);
-		}
+		const context = this.container.getContext(`2d`);
+		context.fillStyle = `#ffffff`;
 
 		for (let x=0;x<this.resolution.width;x++) {
 			for (let y=0;y<this.resolution.height;y++) {
 				if (newStates[x][y]) {
-					this.context.fillRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
+					context.fillRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 				else {
-					this.context.clearRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
+					context.clearRect(x * this.pixel.width, y * this.pixel.height, this.pixel.width, this.pixel.height);
 				}
 			}
 		}
@@ -39,9 +34,12 @@ class Video {
 		this.states = newStates;
 	}
 
-	changePixelSize(width, height) {
-		this.pixel.width = width / 64;
-		this.pixel.height = height / 32;
+	setDisplaySize(display) {
+		this.container = display;
+		this.pixel.width = this.container.width / 64;
+		this.pixel.height = this.container.height / 32;
+
+		this.draw(this.current());
 	}
 
 	// get the current state
