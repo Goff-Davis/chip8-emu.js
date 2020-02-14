@@ -26,14 +26,14 @@ const VIDEO_WIDTH = 64;
 class Chip8 {
 	constructor(video, error) {
 		// initial cpu state
-		this.registers = new Array(16);
-		this.index = 0;
-		this.pc = START_ADDRESS;
-		this.stack = new Array(16);
-		this.sp = 0;
-		this.delayTimer = 0;
-		this.soundTimer = 0;
-		this.memory = new Array(4096);
+		this.registers = new Array(16); // 8 bit
+		this.index = 0; // 16 bit
+		this.pc = START_ADDRESS; // 16 bit
+		this.stack = new Array(16); // 16 bit
+		this.sp = 0; // 8 bit
+		this.delayTimer = 0; // 8 bit
+		this.soundTimer = 0; // 8 bit
+		this.memory = new Array(4096); // 8 bit
 
 		// emulator state
 		this.audio = new Audio(`./sounds/beep.wav`);
@@ -146,7 +146,7 @@ class Chip8 {
 	}
 
 	execute(opcode) {
-		const vx = Math.floor(opcode[0] % 0x10);
+		const vx = opcode[0] % 0x10;
 		const vy = Math.floor(opcode[1] / 0x10);
 		const kk = opcode[1];
 		const nnn = ((opcode[0] % 0x10) * 0x100) + opcode[1];
@@ -162,7 +162,14 @@ class Chip8 {
 					}
 					// return from subroutine
 					case 0xEE: {
-						this.pc = this.stack[--this.sp];
+						let sp = this.sp;
+
+						if (--sp < 0) {
+							sp = 0x100 + (sp % 0x100);
+						}
+
+						this.sp = sp;
+						this.pc = this.stack[this.sp];
 						break;
 					}
 					default:
@@ -177,7 +184,9 @@ class Chip8 {
 			}
 			// 2NNN CALL NNN
 			case 0x2: {
-				this.stack[this.sp++] = this.pc;
+
+				this.stack[this.sp] = this.pc;
+				this.sp = (this.sp + 1) % 0x100;
 				this.pc = nnn;
 				break;
 			}
@@ -204,8 +213,7 @@ class Chip8 {
 			}
 			// 6XKK set VX = KK
 			case 0x6: {
-				// need ternary for overflow (no carry)
-				this.registers[vx] = kk > 0xFF ? kk-0x100:kk;
+				this.registers[vx] = kk;
 				break;
 			}
 			// 7XKK set VX = VX + KK
@@ -314,12 +322,11 @@ class Chip8 {
 			}
 			// 0xBNNN jump to NNN + V0
 			case 0xB: {
-				this.pc = this.registers[0] + nnn;
+				this.pc = (this.registers[0] + nnn) % 0x1000;
 				break;
 			}
 			// CXKK set VX = random AND KK
 			case 0xC: {
-				// @TODO check that this has same result as unsigned (prob not)
 				this.registers[vx] = this.getRand() & kk;
 				break;
 			}
@@ -407,14 +414,13 @@ class Chip8 {
 					}
 					// FX1E set I = I + VX
 					case 0x1E: {
-						// @TODO check overflow issues
-						this.index += this.registers[vx];
+						this.index = (this.index + this.registers[vx]) % 0x1000;
 						break;
 					}
 					// FX29 set I = location of sprite for VX
 					case 0x29: {
 						// 5* because each char is 5 bytes
-						this.index = FONTSET_START_ADDRESS + (5 * this.registers[vx]);
+						this.index = (FONTSET_START_ADDRESS + (5 * this.registers[vx])) % 0x1000;
 						break;
 					}
 					// FX33 store BCD of VX in I, I+1, and I+2
