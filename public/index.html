@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+
+		<title>Chip8 Emulator</title>
+		<meta name="description" content="Chip8 emulator written in JavaScript.">
+
+		<link href="./css/main.css" rel="stylesheet" type="text/css">
+
+		<script type="module" src="./scripts/main.js"></script>
+	</head>
+
+	<body>
+		<noscript>JavaScript is required to use this page. Please enable it and reload.</noscript>
+
+		<header>
+			<h1>Chip8 Emulator</h1>
+		</header>
+
+		<main>
+			<canvas id="display" class="main-content"></canvas>
+
+			<p id="error-notifier" aria-hidden="true" aria-live="polite"></p>
+
+			<button id="power" aria-live="polite" class="main-content">Stop</button>
+
+			<label class="main-content">Choose a rom:
+				<select id="roms">
+					<option value="test1.ch8">test1.ch8</option>
+					<option value="test2.ch8">test2.ch8</option>
+					<option value="CONNECT4">CONNECT4</option>
+					<option value="INVADERS">INVADERS</option>
+					<option value="MAZE">MAZE</option>
+					<option value="MISSILE">MISSILE</option>
+					<option value="PONG">PONG</option>
+					<option value="PONG2">PONG2</option>
+					<option value="TETRIS">TETRIS</option>
+					<option value="TICTAC">TICTAC</option>
+				</select>
+			</label>
+
+			<label class="main-content">Set Screen Size (multiplier):
+				<input id="screen-size-multiplier" type="number" min="1" value="8">
+			</label>
+
+			<label class="main-content">Set clock rate in Hertz (150-500 recommended):
+				<input id="clock-rate" type="number" min="1" value="300">
+			</label>
+
+			<input id="upload" type="file">
+			<label for="upload" class="main-content">Upload your own</label>
+
+			<button id="ctrl-toggle" class="main-content">Controls</button>
+
+			<div id="controls" aria-hidden="true" aria-live="polite">
+				<p>Controls vary for each game, but here are all the usable keys.</p>
+				<ul>
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>Q</li>
+					<li>W</li>
+					<li>E</li>
+					<li>R</li>
+					<li>A</li>
+					<li>S</li>
+					<li>D</li>
+					<li>F</li>
+					<li>Z</li>
+					<li>X</li>
+					<li>C</li>
+					<li>V</li>
+				</ul>
+			</div>
+		</main>
+
+		<footer>
+			<h2>Sounds</h2>
+			<p>If you are not hearing any sounds, check if autoplay is disabled.</p>
+
+			<h2>About</h2>
+			<p>Developed for fun and profit in JavaScript. Use as you wish.</p>
+
+			<a href="https://github.com/Goff-Davis/chip8-emu.js" target="_blank" rel="noopener"><img src="./img/github.svg" alt="Github logo">Github</a>
+
+			<a href="https://github.com/chrisledet/chip8.js" target="_blank" rel="noopener"><img src="./img/github.svg" alt="Github logo">With code/inspiration from Chris Ledet's emulator.</a>
+
+			<p id="copyright">&copy; Davis Goff <span id="year"></span></p>
+		</footer>
+	</body>
+</html>
