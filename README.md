@@ -1,4 +1,4 @@
-<h3 align="center">Chip8 Emulator</h3>
+<h1 align="center">Chip8 Emulator</h1>
 
 ---
 
