@@ -155,12 +155,12 @@ class Chip8 {
 		switch(Math.floor(opcode[0] / 0x10)) {
 			case 0x0:
 				switch(opcode[1]) {
-					// clears the video
+					// 00E0 clears the video
 					case 0xE0: {
 						this.video.clear();
 						break;
 					}
-					// return from subroutine
+					// 00EE return from subroutine
 					case 0xEE: {
 						let sp = this.sp;
 
