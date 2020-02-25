@@ -155,12 +155,12 @@ class Chip8 {
 		switch(Math.floor(opcode[0] / 0x10)) {
 			case 0x0:
 				switch(opcode[1]) {
-					// clears the video
+					// 00E0 clears the video
 					case 0xE0: {
 						this.video.clear();
 						break;
 					}
-					// return from subroutine
+					// 00EE return from subroutine
 					case 0xEE: {
 						let sp = this.sp;
 
@@ -184,7 +184,6 @@ class Chip8 {
 			}
 			// 2NNN CALL NNN
 			case 0x2: {
-
 				this.stack[this.sp] = this.pc;
 				this.sp = (this.sp + 1) % 0x100;
 				this.pc = nnn;
@@ -272,7 +271,6 @@ class Chip8 {
 						break;
 					}
 					// 8XY6 set VX = VX >> 1 lsb in vf
-					// @TODO fail tests
 					case 0x6: {
 						const binary = this.registers[vx].toString(2);
 
@@ -402,7 +400,6 @@ class Chip8 {
 						break;
 					}
 					// FX15 set delay timer = VX
-					// @TODO fail tests maybe?
 					case 0x15: {
 						this.delayTimer = this.registers[vx];
 						break;
@@ -424,7 +421,6 @@ class Chip8 {
 						break;
 					}
 					// FX33 store BCD of VX in I, I+1, and I+2
-					// @TODO fail tests
 					case 0x33: {
 						let value = this.registers[vx];
 
@@ -441,7 +437,6 @@ class Chip8 {
 						break;
 					}
 					// FX55 store V0 through VX in memory starting at I
-					// @TODO fail tests maybe?
 					case 0x55: {
 						for (let i=0;i<vx+1;i++) {
 							this.memory[this.index+i] = this.registers[i];

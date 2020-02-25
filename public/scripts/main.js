@@ -118,20 +118,29 @@ const clearError = () => {
 	errorNotifier.innerHTML = ``;
 };
 
+const powerOn = () => {
+	power.innerHTML = `Stop`;
+	vm.start();
+}
+
+const powerOff = () => {
+	power.innerHTML = `Start`;
+	vm.stop();
+}
+
 // toggle vm on and off
 power.onclick = () => {
 	if (power.innerHTML === `Start`) {
-		power.innerHTML = `Stop`;
-		vm.start();
+		powerOn();
 	}
 	else {
-		power.innerHTML = `Start`;
-		vm.stop();
+		powerOff();
 	}
 };
 
 romSelect.onchange = event => {
 	loadROM(event.target.value);
+	powerOn();
 };
 
 screenSizeMultiplier.onchange = event => {
@@ -140,10 +149,12 @@ screenSizeMultiplier.onchange = event => {
 
 clockRate.onchange = event => {
 	vm.setClockRate(parseInt(event.target.value));
+	powerOn();
 };
 
 upload.onchange = event => {
 	readROM(event.target.files[0]);
+	powerOn();
 };
 
 ctrlToggle.onclick = () => {
