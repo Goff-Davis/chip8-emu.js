@@ -2,26 +2,23 @@
 
 // mock imports
 import Chip8 from '../public/scripts/chip8/chip8.js';
-import Machine from '../public/scripts/chip8/machine.js';
 
 jest.mock('../public/scripts/chip8/chip8.js');
-jest.mock('../public/scripts/chip8/machine.js');
 
 // what we are testing
 import Video from '../public/scripts/chip8/video.js';
 
-const defaultVideo = () => (new Video({ width: 64, height: 32 }));
+const genVideo = () => (new Video({ width: 64, height: 32 }));
 
 describe(`Video display`, () =>{
 	beforeEach(() => {
 		jest.resetModules();
 
 		Chip8.mockClear();
-		Machine.mockClear();
 	});
 
 	test(`draw fills when an array item is true and clears when the item is false`, () => {
-		const video = defaultVideo();
+		const video = genVideo();
 		const context = {
 			fillStyle: `#000000`,
 			fillRect: jest.fn(),
@@ -50,7 +47,7 @@ describe(`Video display`, () =>{
 	});
 
 	test(`setDisplaySize changes the display, adjusts the pixel sizing, and redraws the display`, () => {
-		const video = defaultVideo();
+		const video = genVideo();
 
 		video.draw = jest.fn();
 		video.current = jest.fn();
@@ -66,7 +63,7 @@ describe(`Video display`, () =>{
 	});
 
 	test(`current returns the current states`, () => {
-		const video = defaultVideo();
+		const video = genVideo();
 
 		video.states = `garbage`;
 
@@ -76,7 +73,7 @@ describe(`Video display`, () =>{
 	});
 
 	test(`clear draws clear states`, () => {
-		const video = defaultVideo();
+		const video = genVideo();
 
 		video.draw = jest.fn();
 		video.clearStates = jest.fn();
@@ -88,7 +85,7 @@ describe(`Video display`, () =>{
 	});
 
 	test(`clearStates returns array of falses`, () => {
-		const video = defaultVideo();
+		const video = genVideo();
 
 		const states = video.clearStates();
 

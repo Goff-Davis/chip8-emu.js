@@ -10,7 +10,7 @@ jest.mock('../public/scripts/chip8/video.js');
 // what we are testing
 import Machine from '../public/scripts/chip8/machine.js';
 
-const defaultMachine = () => {
+const genMachine = () => {
 	return (new Machine(jest.fn(), 300, { error: jest.fn(), clearError: jest.fn() }));
 };
 
@@ -26,7 +26,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`start begins running the cpu steps and timers`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.start();
 
@@ -34,7 +34,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`start does not interfere with currently running cpu steps and timers`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.stepID = `garbage`;
 
@@ -51,7 +51,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`stop stops running intervals and sets IDs to null`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.stepID = `garbage`;
 		machine.timerID = `garbage`;
@@ -71,7 +71,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`reset clears errors, stops the machine, and resets the cpu`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.clearError = jest.fn();
 		machine.stop = jest.fn();
@@ -85,7 +85,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`setInput passes on the input to the chip`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.chip.setInput = jest.fn();
 
@@ -95,7 +95,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`setClockRate stops the cpu to set the new clock rate, then restarts`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.stop = jest.fn();
 		machine.start = jest.fn();
@@ -109,7 +109,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`setDisplaySize passes the new display to the video`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.video.setDisplaySize = jest.fn();
 
@@ -119,7 +119,7 @@ describe(`Virtual Machine`, () => {
 	});
 
 	test(`boot clears errors, stops the cpu, passes the rom to the chip, then starts the cpu`, () => {
-		const machine = defaultMachine();
+		const machine = genMachine();
 
 		machine.clearError = jest.fn();
 		machine.stop = jest.fn();
