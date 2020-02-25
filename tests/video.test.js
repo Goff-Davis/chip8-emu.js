@@ -20,6 +20,35 @@ describe(`Video display`, () =>{
 		Machine.mockClear();
 	});
 
+	test(`draw fills when an array item is true and clears when the item is false`, () => {
+		const video = defaultVideo();
+		const context = {
+			fillStyle: `#000000`,
+			fillRect: jest.fn(),
+			clearRect: jest.fn()
+		};
+
+		video.container = {
+			getContext: jest.fn(() => context)
+		};
+
+		const states = video.clearStates();
+
+		video.draw(states);
+
+		expect(context.clearRect).toHaveBeenCalledTimes(64 * 32);
+
+		for (let i=0;i<states.length;i++) {
+			for (let j=0;j<states[i].length;j++) {
+				states[i][j] = true;
+			}
+		}
+
+		video.draw(states);
+
+		expect(context.fillRect).toHaveBeenCalledTimes(64 * 32);
+	});
+
 	test(`setDisplaySize changes the display, adjusts the pixel sizing, and redraws the display`, () => {
 		const video = defaultVideo();
 
@@ -44,5 +73,29 @@ describe(`Video display`, () =>{
 		const current = video.current();
 
 		expect(current).toBe(`garbage`);
+	});
+
+	test(`clear draws clear states`, () => {
+		const video = defaultVideo();
+
+		video.draw = jest.fn();
+		video.clearStates = jest.fn();
+
+		video.clear();
+
+		expect(video.draw).toHaveBeenCalledTimes(1);
+		expect(video.clearStates).toHaveBeenCalledTimes(1);
+	});
+
+	test(`clearStates returns array of falses`, () => {
+		const video = defaultVideo();
+
+		const states = video.clearStates();
+
+		states.forEach(column => {
+			column.forEach(state => {
+				expect(state).toBe(false);
+			});
+		});
 	});
 });
