@@ -32,6 +32,24 @@
 	"jest": {
 		"transform": {
 			"^.+\\.js?$": "babel-jest"
+		},
+		"coverageReporters": [
+			"text",
+			"lcov"
+		],
+		"coverageThreshold": {
+			"global": {
+				"branches": 100,
+				"functions": 100,
+				"lines": 100,
+				"statements": 100
+			},
+			"./public/scripts/chip8/machine.js": {
+				"branches": 100,
+				"functions": 80,
+				"lines": 93.33,
+				"statements": 93.33
+			}
 		}
 	}
 }
