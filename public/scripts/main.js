@@ -121,12 +121,12 @@ const clearError = () => {
 const powerOn = () => {
 	power.innerHTML = `Stop`;
 	vm.start();
-}
+};
 
 const powerOff = () => {
 	power.innerHTML = `Start`;
 	vm.stop();
-}
+};
 
 // toggle vm on and off
 power.onclick = () => {
