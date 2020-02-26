@@ -69,6 +69,12 @@ class Chip8 {
 		// clear video
 		this.video.clear();
 
+		// reset delayTimer
+		this.delayTimer = 0;
+
+		// reset soundtimer
+		this.soundTimer = 0;
+
 		// reset pc
 		this.pc = START_ADDRESS;
 	}
@@ -104,9 +110,7 @@ class Chip8 {
 
 		if (this.soundTimer > 0) {
 			if (--this.soundTimer === 0) {
-				if (this.audio) {
-					this.audio.play();
-				}
+				this.audio.play();
 			}
 		}
 	}
