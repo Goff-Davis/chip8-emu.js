@@ -70,7 +70,9 @@ npm run devstart
 
 ### Unit Tests
 
-Tests the output of the JavaScript files. Primarily focuses on the emulator. The emulator tests MUST NOT fail.
+Tests the output of the JavaScript files. Primarily focuses on the emulator.
+
+The coverage will be very low, especially for the chip8.js file. This is acceptable because the uncovered portions are covered by the ROM tests, explained below.
 
 ```
 npm run test
