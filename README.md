@@ -61,7 +61,7 @@ Install the required packages.
 npm install
 ```
 
-Start the development server (updates on file changes)
+Start the development server (updates on file changes).
 ```
 npm run devstart
 ```
